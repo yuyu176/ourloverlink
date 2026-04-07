@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>梦角传讯站 - 专属互动</title>
+    <style>
+        :root {
+            --bubble-color: #ffffff;
+            --bg-url: url('https://images.unsplash.com/photo-1528164344705-4754268799af?auto=format&fit=crop&w=1350&q=80');
+        }
+        body {
+            font-family: "Microsoft YaHei", serif;
+            background: var(--bg-url) center/cover no-repeat fixed;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #app {
+            width: 380px;
+            height: 650px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        /* 顶部状态栏 */
+        .status-bar {
+            padding: 15px;
+            background: rgba(255,255,255,0.3);
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+        }
+        /* 消息展示区 */
+        .chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg {
+            display: flex;
+            align-items: flex-start;
+            max-width: 85%;
+        }
+        .msg.me { align-self: flex-end; flex-direction: row-reverse; }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 8px;
+        }
+        .bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            background: var(--bubble-color);
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        /* 字卡面板 */
+        .card-panel {
+            height: 150px;
+            background: rgba(255,255,255,0.8);
+            padding: 10px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+        .word-card {
+            font-size: 12px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+        }
+        /* 模拟通话弹出层 */
+        .call-overlay {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="status-bar" id="daily-info">
+        ☀️ 24°C | 梦角心情：想见你 <br>
+        <small id="random-quote">“只要想到你，世界就亮了。”</small>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        </div>
+
+    <div class="card-panel" id="cardPanel">
+        </div>
+
+    <div class="call-overlay" id="callOverlay">
+        <div class="avatar" style="width:100px; height:100px; margin-bottom:20px;"></div>
+        <h2 id="callerName">梦角</h2>
+        <p>正在呼叫...</p >
+        <button onclick="endCall()" style="background:red; color:white; border:none; padding:10px 20px; border-radius:20px;">挂断</button>
+    </div>
+</div>
+
+<script>
+    // 1. 初始化语录库 (100条简化版)
+    const quotes = [
+        "早安，醒了吗？", "还在睡？", "想我没？", "别给自己压力...", 
+        "你是我的。", "今天有没有想我？", "乖一点，听话。"
+        // 这里可以继续添加至100条
+    ];
+
+    // 2. 字卡内容加载
+    const cardTexts = ["早安，醒了吗", "还在睡？", "想我没", "你是我的", "乖一点", "别熬夜"];
+
+    function initCards() {
+        const panel = document.getElementById('cardPanel');
+        cardTexts.forEach(text => {
+            const div = document.createElement('div');
+            div.className = 'word-card';
+            div.innerText = text;
+            div.onclick = () => sendMessage(text, 'me');
+            panel.appendChild(div);
+        });
+    }
+
+    // 3. 发送消息逻辑
+    function sendMessage(text, role) {
+        const box = document.getElementById('chatBox');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `msg ${role}`;
+        msgDiv.innerHTML = `
+            <div class="avatar"></div>
+            <div class="bubble">${text}</div>
+        `;
+        box.appendChild(msgDiv);
+        box.scrollTop = box.scrollHeight;
+
+        // 简易特效触发
+        if(text.includes("想我")) {
+            triggerEffect('❤️');
+        }
+    }
+
+    function triggerEffect(emoji) {
+        const effect = document.createElement('div');
+        effect.style.position = 'absolute';
+        effect.style.top = '50%';
+        effect.style.left = '50%';
+        effect.innerText = emoji;
+        effect.style.fontSize = '50px';
+        effect.style.transition = 'all 1s';
+        document.getElementById('app').appendChild(effect);
+        setTimeout(() => {
+            effect.style.transform = 'translateY(-100px)';
+            effect.style.opacity = '0';
+            setTimeout(() => effect.remove(), 1000);
+        }, 100);
+    }
+
+    // 4. 模拟梦角自主拨号
+    setTimeout(() => {
+        document.getElementById('callOverlay').style.display = 'flex';
+    }, 15000); // 15秒后触发一次呼叫
+
+    function endCall() {
+        document.getElementById('callOverlay').style.display = 'none';
+    }
+
+    // 5. 随机显示每日语录
+    document.getElementById('random-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+    initCards();
+</script>
+</body>
+</html>
