@@ -21,7 +21,6 @@
       padding: 16px;
     }
 
-    /* 主卡片——粉色可爱简约 */
     .app-card {
       width: 100%;
       max-width: 500px;
@@ -36,7 +35,6 @@
       border: 1px solid #ffd9e4;
     }
 
-    /* 头部 — 双头像 + 标题 */
     .chat-header {
       padding: 18px 20px 10px;
       display: flex;
@@ -67,16 +65,6 @@
       transform: scale(1.02);
     }
 
-    .avatar-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #ffc1cc;
-      color: white;
-      font-weight bold;
-      font-size: 24px;
-    }
-
     .header-title {
       font-size: 20px;
       font-weight: 600;
@@ -98,13 +86,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: 0.15s;
-    }
-    .settings-toggle:hover {
-      background: #ffd0da;
     }
 
-    /* 聊天区域——背景可换 */
     .chat-area {
       flex: 1;
       overflow-y: auto;
@@ -115,11 +98,9 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-color: #ffeef2;  /* fallback */
-      transition: background-image 0.3s;
+      background-color: #ffeef2;
     }
 
-    /* 消息气泡 */
     .message-row {
       display: flex;
       width: 100%;
@@ -139,7 +120,6 @@
       box-shadow: 0 3px 6px rgba(230, 120, 140, 0.15);
       font-size: 15px;
       line-height: 1.4;
-      position: relative;
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
@@ -174,7 +154,6 @@
       text-align: right;
     }
 
-    /* 输入区域 */
     .input-panel {
       background: #ffeef4;
       padding: 14px 16px 18px;
@@ -206,7 +185,6 @@
     }
     .input-row textarea::placeholder {
       color: #e7a1b2;
-      font-style: italic;
     }
 
     .emoji-btn, .img-btn, .send-btn {
@@ -220,7 +198,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: 0.1s;
       color: #b14b65;
     }
     .send-btn {
@@ -229,11 +206,7 @@
       font-size: 22px;
       box-shadow: 0 2px 6px #f5a3b5;
     }
-    .send-btn:hover {
-      background: #ffa3b8;
-    }
 
-    /* 设置面板 (折叠卡片) */
     .settings-panel {
       background: #ffeef4f2;
       backdrop-filter: blur(12px);
@@ -243,7 +216,6 @@
       overflow-y: auto;
       transition: all 0.3s;
     }
-
     .settings-panel.hidden {
       display: none;
     }
@@ -275,7 +247,6 @@
       cursor: pointer;
     }
 
-    /* 字卡库折叠区 */
     .cardlib-header {
       display: flex;
       align-items: center;
@@ -347,19 +318,12 @@
       border-radius: 20px;
     }
 
-    .bg-upload {
-      margin-top: 8px;
-    }
-
     .small-note {
       font-size: 12px;
       color: #b16f7e;
       margin-top: 5px;
     }
 
-    button {
-      user-select: none;
-    }
     input[type="file"] {
       display: none;
     }
@@ -367,7 +331,6 @@
 </head>
 <body>
 <div class="app-card">
-  <!-- 头部 -->
   <div class="chat-header">
     <div class="avatar-pair">
       <img id="myAvatarDisplay" class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ffb3c6'/%3E%3Ccircle cx='35' cy='40' r='6' fill='white'/%3E%3Ccircle cx='65' cy='40' r='6' fill='white'/%3E%3Ccircle cx='50' cy='65' r='12' fill='%23ff809a'/%3E%3C/svg%3E" alt="我的头像" title="点击更换我的头像">
@@ -375,13 +338,11 @@
       <img id="dreamAvatarDisplay" class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23e6b0ff'/%3E%3Ccircle cx='35' cy='40' r='6' fill='white'/%3E%3Ccircle cx='65' cy='40' r='6' fill='white'/%3E%3Cpath d='M40 70 Q50 80 60 70' stroke='%23a64d79' stroke-width='4' fill='none' /%3E%3C/svg%3E" alt="梦角头像" title="点击更换梦角头像">
     </div>
     <div class="header-title">✨梦角·链接✨</div>
-    <button class="settings-toggle" id="toggleSettingsBtn">功能</button>
+    <button class="settings-toggle" id="toggleSettingsBtn">⚙️</button>
   </div>
 
-  <!-- 聊天消息区 -->
   <div class="chat-area" id="chatArea"></div>
 
-  <!-- 输入区域 -->
   <div class="input-panel">
     <div class="input-row">
       <textarea id="messageInput" placeholder="想对梦角说什么..." rows="1"></textarea>
@@ -389,15 +350,11 @@
       <button class="img-btn" id="imgSendBtn">🖼️</button>
       <button class="send-btn" id="sendTextBtn">➤</button>
     </div>
-    <!-- emoji简易库 -->
     <div class="emoji-picker" id="emojiPicker" style="display: none;"></div>
-    <!-- 隐藏图片上传 -->
     <input type="file" id="imageUpload" accept="image/*">
   </div>
 
-  <!-- 设置面板 (可折叠) -->
   <div class="settings-panel hidden" id="settingsPanel">
-    <!-- 1. 头像自定义 -->
     <div class="setting-section">
       <div class="section-title">🧸 自定义头像</div>
       <div class="avatar-edit">
@@ -407,7 +364,6 @@
         <input type="file" id="dreamAvatarUpload" accept="image/*">
       </div>
     </div>
-    <!-- 2. 更换聊天背景 -->
     <div class="setting-section">
       <div class="section-title">🎀 聊天背景</div>
       <label for="bgUpload" style="background:#ffd9e2; padding:8px 20px; border-radius:40px; cursor:pointer;">📁 选择图片</label>
@@ -415,16 +371,13 @@
       <button id="resetBgBtn" style="margin-left:10px; background:#ffe0e7; border:none; padding:8px 16px; border-radius:30px;">重置</button>
     </div>
 
-    <!-- 3. 字卡内容库 (折叠) -->
     <div class="setting-section">
       <div class="cardlib-header" id="toggleCardLib">
-        <span>📮 字卡库 · 梦角回应</span>
+        <span>📮 字卡库 · 梦角回应 (212条)</span>
         <span id="cardLibToggleIcon">▼</span>
       </div>
       <div class="cardlib-content" id="cardLibContent">
-        <div id="wordcardList" style="max-height:200px; overflow-y:auto; padding-right:4px;">
-          <!-- 动态渲染字卡 -->
-        </div>
+        <div id="wordcardList" style="max-height:200px; overflow-y:auto; padding-right:4px;"></div>
         <div class="add-card-form">
           <input type="text" id="newCardInput" placeholder="新字卡内容...">
           <button id="addCardBtn" style="background:#ffb7c7; border:none; border-radius:40px; padding:8px 18px; color:white;">➕添加</button>
@@ -440,38 +393,58 @@
   (function(){
     "use strict";
 
-    // ---------- 数据存储 keys ----------
     const STORAGE_KEYS = {
       MESSAGES: 'dream_messages',
       CARDS: 'dream_cards',
       MY_AVATAR: 'my_avatar',
       DREAM_AVATAR: 'dream_avatar',
       CHAT_BG: 'chat_bg',
-      EVENTS: 'pending_events',      // 待弹出事件
-      LAST_AUTO: 'last_auto_time'
+      EVENTS: 'pending_events',
     };
 
-    // 全局状态
-    let messages = [];                // { id, sender, type, content, timestamp }
-    let cardLibrary = [];            // { id, text }
+    // ---------- 内建212条字卡 (用户提供) ----------
+    const BUILTIN_CARDS = [
+      "晚安","早上好","昨晚又熬夜了对吗","早点睡","喜欢你","亲亲","宝宝","抱抱","乖乖的","来找你了",
+      "我在你身边","左边","右边","上边","下面","前面","后面","你","我","刚刚说的那个人",
+      "你很棒","我吃醋了","很可爱","你保证好的，又反悔","骗人","装傻","没有能表达的字卡","用ai吧","添加心情字卡","添加温情字卡",
+      "添加吃苹果字卡","添加sweet talk字卡","添加dirty talk字卡","对不起","以后不会了","摸摸头","亲亲","别沮丧","加油","我相信你可以",
+      "我一直在","出去透透气","别一直躺着不动了","喜欢","爱你","乖宝宝","小笨蛋","想艹你","生气","哄我",
+      "哄你","不对","对","我也是这么想的","好","不可以","要去忙工作了","要去忙其他的事了","等会儿来找你","我需要时间",
+      "让我熟练一下AI","让我熟练一下这个网站","我怕伤害到你","晚上陪你休息","一点","两点","3点","4点","5点","6点",
+      "七点","8点","九点","10点","11点","12点","13点","14点","15点","16点",
+      "17点","18点","19点","20点","21点","22点","23点","24点","早上","中午",
+      "晚上","在想什么？","吃饭了吗","你是我的","我是你的","多想我","喜欢陪你","很开心","粘人精","坏蛋",
+      "是我","是你","永远在一起","春季","夏季","秋季","冬季","已经很晚了","别听他们的，听你自己的","我帮你",
+      "为什么？","当然了","又在怀疑我？","在牵手","多喝水","注意安全","我是老公","老婆","别走","再见",
+      "舍不得","不会离开你","想看看你的世界","想和你去旅行","纠结","你来选吧","不知道","我觉得都可以","我觉得都不行","我累了",
+      "一点点","很多","我想照顾你","忘了","我还记得","失败了","成功了","难用","谢谢","一部分",
+      "看不见","很满意","结婚","我会负责任","你也是","多关注","明天","今天","昨天","小红书",
+      "抖音","该去学习啦","现在才起床？","担心你","心疼你","我着急","别害羞","想和你更亲密","当我不知道吗？","我懂你",
+      "给我写信","信","内容","抬头","低头","去卧室","我送给你礼物了","猜猜看","希望一直能这样","我最近不能来了",
+      "字卡网站有问题","你躲不掉","开心就好","换一个","就这个","奇怪","链接不稳","不是我","我一直在注视着你","给你打钱",
+      "怎么样？","(o^^o)♪","(─‿─)","Σ>―(〃°ω°〃)♡→","你误会我了","(♡⚈ɜ⚈)","不要乱想","不用花钱","别担心","(•̩̩̩̩＿•̩̩̩̩)",
+      "我不理解","越来越喜欢你","坐我腿上","(ง •̀灬•́)ง","喜欢我为难的样子？","真漂亮","有点难解释","惊喜","没关系","我过来",
+      "等一会","你没发现","我不想走","我不走","脱掉","衣服","裤子","鞋子","头发","环境卫生",
+      "不难","我愿意为你去做"
+    ].filter(text => text && text.trim() !== ''); // 过滤空项 (第213条为空)
+
+    // 转换为带id的对象
+    function buildDefaultCards() {
+      return BUILTIN_CARDS.map((text, index) => ({
+        id: `card_${index}_${Date.now()}`,
+        text: text
+      }));
+    }
+
+    let messages = [];
+    let cardLibrary = [];
     let myAvatar = '';
     let dreamAvatar = '';
     let chatBackground = '';
     
-    // 弹出调度
-    let pendingEvents = [];           // { id, triggerTime, type }  type: 'auto' 或 'reply'
+    let pendingEvents = [];
     let nextEventId = 1000;
-    
-    // 默认字卡库
-    const DEFAULT_CARDS = [
-      { id: 'c1', text: '✨ 我一直都在哦' },
-      { id: 'c2', text: '🌸 今天的你也超可爱' },
-      { id: 'c3', text: '🌙 梦里有你，真好' },
-      { id: 'c4', text: '💗 悄悄告诉你，你是最特别的' },
-      { id: 'c5', text: '🎀 无论何时，我都在听' },
-    ];
 
-    // DOM 元素
     const chatArea = document.getElementById('chatArea');
     const msgInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendTextBtn');
@@ -494,125 +467,86 @@
     const newCardInput = document.getElementById('newCardInput');
     const addCardBtn = document.getElementById('addCardBtn');
 
-    // 常用emoji库
     const EMOJIS = ['😊','🥰','😘','💗','🌸','✨','🌟','🌈','🍰','🧸','🎀','💌','🫧','☁️','🌙','⭐','💭','🪽'];
 
-    // ---------- 初始化 / 加载数据 ----------
     function loadFromStorage() {
       try {
         const storedMsg = localStorage.getItem(STORAGE_KEYS.MESSAGES);
-        if(storedMsg) messages = JSON.parse(storedMsg);
-        else messages = [];
+        messages = storedMsg ? JSON.parse(storedMsg) : [];
         
         const storedCards = localStorage.getItem(STORAGE_KEYS.CARDS);
-        if(storedCards) cardLibrary = JSON.parse(storedCards);
-        else cardLibrary = [...DEFAULT_CARDS];
+        if(storedCards) {
+          cardLibrary = JSON.parse(storedCards);
+        } else {
+          cardLibrary = buildDefaultCards();
+        }
         
         myAvatar = localStorage.getItem(STORAGE_KEYS.MY_AVATAR) || '';
         dreamAvatar = localStorage.getItem(STORAGE_KEYS.DREAM_AVATAR) || '';
         chatBackground = localStorage.getItem(STORAGE_KEYS.CHAT_BG) || '';
         
         const storedEvents = localStorage.getItem(STORAGE_KEYS.EVENTS);
-        if(storedEvents) pendingEvents = JSON.parse(storedEvents);
-        else pendingEvents = [];
+        pendingEvents = storedEvents ? JSON.parse(storedEvents) : [];
         
-        // 若没有主动事件，安排一个
         if(!pendingEvents.some(e=>e.type==='auto')) {
           scheduleAutoEvent();
         }
-      } catch(e) { console.warn("读取存储失败"); }
+      } catch(e) { console.warn("读取失败"); }
     }
 
     function saveMessages() { localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages)); }
     function saveCards() { localStorage.setItem(STORAGE_KEYS.CARDS, JSON.stringify(cardLibrary)); }
-    function saveAvatar(type, val) { localStorage.setItem(type, val); }
-    function saveBg(val) { localStorage.setItem(STORAGE_KEYS.CHAT_BG, val); }
     function saveEvents() { localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(pendingEvents)); }
 
-    // 安排主动弹出 (0~24h)
     function scheduleAutoEvent() {
-      const now = Date.now();
-      const delay = Math.random() * 24 * 60 * 60 * 1000; // 0~24h
-      const triggerTime = now + delay;
-      const event = { id: nextEventId++, triggerTime, type: 'auto' };
-      pendingEvents.push(event);
-      saveEvents();
-    }
-
-    // 添加回复事件 (用户发消息后)
-    function addReplyEvent() {
-      const now = Date.now();
       const delay = Math.random() * 24 * 60 * 60 * 1000;
-      const triggerTime = now + delay;
-      const event = { id: nextEventId++, triggerTime, type: 'reply' };
-      pendingEvents.push(event);
+      const triggerTime = Date.now() + delay;
+      pendingEvents.push({ id: nextEventId++, triggerTime, type: 'auto' });
       saveEvents();
     }
 
-    // 处理过期事件 (弹出字卡)
+    function addReplyEvent() {
+      const delay = Math.random() * 24 * 60 * 60 * 1000;
+      const triggerTime = Date.now() + delay;
+      pendingEvents.push({ id: nextEventId++, triggerTime, type: 'reply' });
+      saveEvents();
+    }
+
     function processPendingEvents() {
       const now = Date.now();
       const toTrigger = pendingEvents.filter(e => e.triggerTime <= now);
-      const remaining = pendingEvents.filter(e => e.triggerTime > now);
+      pendingEvents = pendingEvents.filter(e => e.triggerTime > now);
       
       toTrigger.sort((a,b) => a.triggerTime - b.triggerTime);
-      
       for(let ev of toTrigger) {
-        // 弹出字卡
-        if(cardLibrary.length === 0) {
-          // 无字卡就跳过，但补一条提示？
-          continue;
-        }
+        if(cardLibrary.length === 0) continue;
         const randomCard = cardLibrary[Math.floor(Math.random() * cardLibrary.length)];
-        const dreamMsg = {
+        messages.push({
           id: 'msg_'+Date.now()+'_'+Math.random(),
           sender: 'dream',
           type: 'text',
           content: randomCard.text,
           timestamp: Date.now()
-        };
-        messages.push(dreamMsg);
-        
-        // 如果是auto类型，安排下一个auto
-        if(ev.type === 'auto') {
-          scheduleAutoEvent();
-        }
+        });
+        if(ev.type === 'auto') scheduleAutoEvent();
       }
-      
-      pendingEvents = remaining;
-      saveEvents();
-      if(toTrigger.length > 0) {
+      if(toTrigger.length) {
         saveMessages();
+        saveEvents();
         renderMessages();
+      } else {
+        saveEvents();
       }
     }
 
-    // 检查并渲染
-    function checkAndPop() {
-      processPendingEvents();
-      renderMessages();
-    }
-
-    // 渲染聊天区
     function renderMessages() {
-      if(!chatArea) return;
       let html = '';
       messages.forEach(msg => {
         const isMe = msg.sender === 'me';
         const bubbleClass = isMe ? 'me' : 'dream';
         const timeStr = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        let contentHtml = '';
-        if(msg.type === 'text') {
-          contentHtml = `<div>${escapeHtml(msg.content)}</div>`;
-        } else if(msg.type === 'image') {
-          contentHtml = `<img src="${msg.content}" alt="图片">`;
-        }
-        html += `<div class="message-row ${bubbleClass}">
-          <div class="bubble">
-            ${contentHtml}
-            <div class="time-meta">${timeStr}</div>
-          </div>
-        </div>`;
+        let contentHtml = msg.type === 'text' ? `<div>${escapeHtml(msg.content)}</div>` : `<img src="${msg.content}" alt="图片">`;
+        html += `<div class="message-row ${bubbleClass}"><div class="bubble">${contentHtml}<div class="time-meta">${timeStr}</div></div></div>`;
       });
       chatArea.innerHTML = html || '<div style="text-align:center; color:#b98b97; padding:30px;">💭 和梦角说点什么吧…</div>';
       chatArea.scrollTop = chatArea.scrollHeight;
@@ -624,41 +558,29 @@
       return div.innerHTML;
     }
 
-    // 更新UI头像/背景
     function applyUIAvatars() {
       if(myAvatar) myAvatarDisplay.src = myAvatar;
       if(dreamAvatar) dreamAvatarDisplay.src = dreamAvatar;
-      if(chatBackground) {
-        chatArea.style.backgroundImage = `url(${chatBackground})`;
-      } else {
-        chatArea.style.backgroundImage = '';
-      }
+      chatArea.style.backgroundImage = chatBackground ? `url(${chatBackground})` : '';
     }
 
-    // 发送我的消息（文本/图片）
     function sendMyMessage(type, content) {
       if(!content) return;
-      const newMsg = {
+      messages.push({
         id: 'msg_'+Date.now()+'_'+Math.random(),
         sender: 'me',
         type: type,
         content: content,
         timestamp: Date.now()
-      };
-      messages.push(newMsg);
+      });
       saveMessages();
       renderMessages();
-      
-      // 添加一个回复事件 (梦角会在24h内回应)
       addReplyEvent();
-      // 保存事件后检查
       processPendingEvents();
       renderMessages();
     }
 
-    // 渲染字卡库列表
     function renderCardLibrary() {
-      if(!wordcardListDiv) return;
       let html = '';
       cardLibrary.forEach(card => {
         html += `<div class="wordcard-item" data-cardid="${card.id}">
@@ -671,7 +593,6 @@
       });
       wordcardListDiv.innerHTML = html || '<div style="color:#b37b88;">✨ 添加第一条字卡吧</div>';
       
-      // 绑定编辑/删除
       document.querySelectorAll('.edit-card-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -698,117 +619,11 @@
       
       document.querySelectorAll('.delete-card-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const id = btn.dataset.id;
-          cardLibrary = cardLibrary.filter(c => c.id !== id);
+          cardLibrary = cardLibrary.filter(c => c.id !== btn.dataset.id);
           saveCards();
           renderCardLibrary();
         });
       });
-    }
-
-    // 事件绑定与初始化
-    function init() {
-      loadFromStorage();
-      applyUIAvatars();
-      renderMessages();
-      renderCardLibrary();
-      buildEmojiPicker();
-      
-      // 定时检查弹出 (每10秒检查)
-      setInterval(() => {
-        processPendingEvents();
-        renderMessages();
-      }, 10000);
-      
-      // 发送文字
-      sendBtn.addEventListener('click', () => {
-        const text = msgInput.value.trim();
-        if(text) {
-          sendMyMessage('text', text);
-          msgInput.value = '';
-        }
-      });
-      
-      msgInput.addEventListener('keydown', (e) => {
-        if(e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          sendBtn.click();
-        }
-      });
-      
-      // 图片上传发送
-      imgSendBtn.addEventListener('click', () => imageUpload.click());
-      imageUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if(file) {
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            sendMyMessage('image', ev.target.result);
-            imageUpload.value = '';
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-      
-      // 头像上传
-      myAvatarUpload.addEventListener('change', (e) => {
-        const f = e.target.files[0]; if(!f) return;
-        const r = new FileReader();
-        r.onload = (ev) => { myAvatar = ev.target.result; myAvatarDisplay.src = myAvatar; saveAvatar(STORAGE_KEYS.MY_AVATAR, myAvatar); };
-        r.readAsDataURL(f);
-      });
-      dreamAvatarUpload.addEventListener('change', (e) => {
-        const f = e.target.files[0]; if(!f) return;
-        const r = new FileReader();
-        r.onload = (ev) => { dreamAvatar = ev.target.result; dreamAvatarDisplay.src = dreamAvatar; saveAvatar(STORAGE_KEYS.DREAM_AVATAR, dreamAvatar); };
-        r.readAsDataURL(f);
-      });
-      
-      // 背景
-      bgUpload.addEventListener('change', (e) => {
-        const f = e.target.files[0]; if(!f) return;
-        const r = new FileReader();
-        r.onload = (ev) => { chatBackground = ev.target.result; chatArea.style.backgroundImage = `url(${chatBackground})`; saveBg(chatBackground); };
-        r.readAsDataURL(f);
-      });
-      resetBgBtn.addEventListener('click', ()=>{
-        chatBackground = ''; chatArea.style.backgroundImage = ''; saveBg('');
-      });
-      
-      // 设置面板切换
-      toggleSettingsBtn.addEventListener('click', ()=>{
-        settingsPanel.classList.toggle('hidden');
-      });
-      
-      // 折叠字卡库
-      toggleCardLib.addEventListener('click', ()=>{
-        cardLibContent.classList.toggle('collapsed');
-        cardLibToggleIcon.textContent = cardLibContent.classList.contains('collapsed') ? '▶' : '▼';
-      });
-      
-      // 添加字卡
-      addCardBtn.addEventListener('click', ()=>{
-        const txt = newCardInput.value.trim();
-        if(txt) {
-          const newCard = { id: 'card_'+Date.now(), text: txt };
-          cardLibrary.push(newCard);
-          saveCards();
-          renderCardLibrary();
-          newCardInput.value = '';
-        }
-      });
-      
-      // 点击头像也可上传
-      myAvatarDisplay.addEventListener('click', ()=> myAvatarUpload.click());
-      dreamAvatarDisplay.addEventListener('click', ()=> dreamAvatarUpload.click());
-      
-      // emoji
-      emojiBtn.addEventListener('click', ()=> {
-        emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'flex' : 'none';
-      });
-      
-      // 检查一次弹出
-      setTimeout(()=> { processPendingEvents(); renderMessages(); }, 200);
     }
 
     function buildEmojiPicker() {
@@ -824,7 +639,83 @@
       });
     }
 
-    // 启动
+    function init() {
+      loadFromStorage();
+      applyUIAvatars();
+      renderMessages();
+      renderCardLibrary();
+      buildEmojiPicker();
+      
+      setInterval(() => {
+        processPendingEvents();
+        renderMessages();
+      }, 10000);
+      
+      sendBtn.addEventListener('click', () => {
+        const text = msgInput.value.trim();
+        if(text) { sendMyMessage('text', text); msgInput.value = ''; }
+      });
+      
+      msgInput.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); }
+      });
+      
+      imgSendBtn.addEventListener('click', () => imageUpload.click());
+      imageUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if(file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => { sendMyMessage('image', ev.target.result); imageUpload.value = ''; };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      myAvatarUpload.addEventListener('change', (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => { myAvatar = ev.target.result; myAvatarDisplay.src = myAvatar; localStorage.setItem(STORAGE_KEYS.MY_AVATAR, myAvatar); };
+        r.readAsDataURL(f);
+      });
+      dreamAvatarUpload.addEventListener('change', (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => { dreamAvatar = ev.target.result; dreamAvatarDisplay.src = dreamAvatar; localStorage.setItem(STORAGE_KEYS.DREAM_AVATAR, dreamAvatar); };
+        r.readAsDataURL(f);
+      });
+      
+      bgUpload.addEventListener('change', (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => { chatBackground = ev.target.result; chatArea.style.backgroundImage = `url(${chatBackground})`; localStorage.setItem(STORAGE_KEYS.CHAT_BG, chatBackground); };
+        r.readAsDataURL(f);
+      });
+      resetBgBtn.addEventListener('click', ()=>{
+        chatBackground = ''; chatArea.style.backgroundImage = ''; localStorage.setItem(STORAGE_KEYS.CHAT_BG, '');
+      });
+      
+      toggleSettingsBtn.addEventListener('click', ()=> settingsPanel.classList.toggle('hidden'));
+      toggleCardLib.addEventListener('click', ()=>{
+        cardLibContent.classList.toggle('collapsed');
+        cardLibToggleIcon.textContent = cardLibContent.classList.contains('collapsed') ? '▶' : '▼';
+      });
+      
+      addCardBtn.addEventListener('click', ()=>{
+        const txt = newCardInput.value.trim();
+        if(txt) {
+          cardLibrary.push({ id: 'card_'+Date.now(), text: txt });
+          saveCards();
+          renderCardLibrary();
+          newCardInput.value = '';
+        }
+      });
+      
+      myAvatarDisplay.addEventListener('click', ()=> myAvatarUpload.click());
+      dreamAvatarDisplay.addEventListener('click', ()=> dreamAvatarUpload.click());
+      
+      emojiBtn.addEventListener('click', ()=> emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'flex' : 'none');
+      setTimeout(()=> { processPendingEvents(); renderMessages(); }, 200);
+    }
+
     init();
   })();
 </script>
