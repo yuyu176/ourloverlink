@@ -3,643 +3,664 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>梦角传讯链接 · 随缘之梦</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>梦角传讯 · 心之回响</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none; /* 避免拖动干扰，不影响输入 */
         }
+
         body {
-            background: #eef2f5;
-            font-family: 'Inter', 'Noto Serif JP', sans-serif;
+            background: #f9f3f0;
+            font-family: 'Segoe UI', 'Helvetica Neue', 'Noto Sans JP', 'PingFang SC', Roboto, 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-        }
-        .app-container {
-            width: 1300px;
-            max-width: 98vw;
-            height: 90vh;
-            background: #fff9f5;
-            border-radius: 42px;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
-            display: flex;
             overflow: hidden;
+            position: relative;
         }
-        /* 左侧设置面板 */
+
+        /* 日系柔和主色调 */
+        :root {
+            --bg-main: #fffaf5;
+            --card-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            --accent-pink: #f7c1b6;
+            --accent-sakura: #ffb7b2;
+            --text-dark: #5e4b3c;
+            --chat-user-bubble: #d9f0ec;
+            --chat-dream-bubble: #fff0e6;
+        }
+
+        /* 全局容器 */
+        .app {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            background: var(--bg-main);
+            position: relative;
+        }
+
+        /* 主聊天区 */
+        .chat-area {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255,245,240,0.6);
+            backdrop-filter: blur(2px);
+            border-right: 1px solid #ffe1d4;
+            position: relative;
+        }
+
+        /* 聊天头部 */
+        .chat-header {
+            padding: 16px 24px;
+            background: white;
+            border-bottom: 1px solid #ffe0d0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ffe0d4;
+            border: 2px solid #ffc5b5;
+            cursor: pointer;
+        }
+        .dream-info {
+            font-size: 14px;
+            color: #b97f6e;
+        }
+        .status-badge {
+            background: #ffe8e0;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+        }
+        .daily-msg {
+            background: #fff3ed;
+            border-radius: 32px;
+            padding: 6px 14px;
+            font-size: 12px;
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 消息列表 */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background-image: var(--bg-img, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background 0.2s;
+        }
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            animation: fadeSlide 0.2s ease;
+        }
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        .msg-bubble {
+            max-width: 70%;
+            padding: 10px 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .user .msg-bubble {
+            background: var(--user-bubble-color, #d9f0ec);
+            border-radius: 24px 8px 24px 24px;
+            color: #2e4a40;
+        }
+        .dream .msg-bubble {
+            background: var(--dream-bubble-color, #fff0e6);
+            border-radius: 8px 24px 24px 24px;
+            color: #6b4c3a;
+        }
+        .msg-time {
+            font-size: 10px;
+            color: #c9aca0;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .dream .msg-time {
+            text-align: left;
+        }
+        /* 图片消息 */
+        .msg-image {
+            max-width: 200px;
+            border-radius: 16px;
+            margin-top: 4px;
+        }
+
+        /* 输入区 */
+        .input-area {
+            background: white;
+            padding: 12px 20px 20px;
+            border-top: 1px solid #ffede3;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .input-box {
+            flex: 1;
+            border: 1px solid #ffd9cc;
+            border-radius: 48px;
+            padding: 12px 18px;
+            font-size: 14px;
+            background: #fffcf9;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-box:focus {
+            border-color: #f7a999;
+            box-shadow: 0 0 0 2px rgba(247,169,153,0.2);
+        }
+        button {
+            background: #ffdbd0;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 48px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #7b4d3a;
+            font-weight: 500;
+        }
+        button:hover {
+            background: #ffcbbc;
+            transform: scale(0.96);
+        }
+        .icon-btn {
+            background: transparent;
+            font-size: 22px;
+            padding: 8px;
+        }
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .emoji-panel, .sticker-panel {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: #fffaf5;
+            border-radius: 32px;
+            padding: 8px 12px;
+            margin-top: 6px;
+            border: 1px solid #ffede3;
+        }
+        .emoji-item, .sticker-item {
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .sticker-item img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        /* 右侧设置区 */
         .settings-panel {
-            width: 300px;
-            background: #fef7e8;
-            border-right: 1px solid #f0e2d0;
-            padding: 20px 18px;
+            width: 320px;
+            background: #fffef8;
+            border-left: 1px solid #ffe0d2;
+            padding: 20px 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 24px;
             font-size: 13px;
         }
-        .settings-panel::-webkit-scrollbar { width: 4px; }
-        .settings-panel h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #b48c6c;
-            border-left: 3px solid #e3c9b0;
-            padding-left: 10px;
-            margin-bottom: 12px;
-        }
         .setting-group {
+            background: #fff9f5;
+            border-radius: 28px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .setting-group h4 {
+            color: #c28a74;
+            margin-bottom: 12px;
+            font-size: 15px;
+            border-left: 3px solid #ffb79f;
+            padding-left: 8px;
+        }
+        input, select, textarea {
             background: white;
-            border-radius: 24px;
-            padding: 14px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-        }
-        .setting-item {
-            margin-bottom: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .setting-item label {
-            font-weight: 500;
-            color: #7f6148;
-            font-size: 12px;
-        }
-        input, select, textarea, button {
-            background: #fffaf5;
-            border: 1px solid #eeddcc;
-            border-radius: 40px;
-            padding: 8px 14px;
+            border: 1px solid #ffdfd2;
+            border-radius: 28px;
+            padding: 8px 12px;
+            width: 100%;
+            margin: 6px 0;
             font-size: 13px;
-            outline: none;
-            font-family: inherit;
         }
-        button {
-            background: #f0e2d4;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 500;
+        .color-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
-        button.primary {
-            background: #d9c2a7;
-            color: white;
-            border: none;
-        }
-        button.small {
-            padding: 4px 10px;
-            font-size: 11px;
-        }
-        .wordcard-list {
-            max-height: 180px;
-            overflow-y: auto;
-            background: #fff8f0;
+        .wordcard-item {
+            background: #f8ede6;
+            padding: 6px 8px;
+            margin: 6px 0;
             border-radius: 20px;
-            padding: 8px;
-            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
         }
-        .card-item {
+        .flex-between {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 8px;
-            border-bottom: 1px solid #f0e0cf;
         }
-        .emoji-palette {
-            display: grid;
-            grid-template-columns: repeat(6,1fr);
-            gap: 8px;
+        .call-buttons {
+            display: flex;
+            gap: 12px;
             margin-top: 8px;
         }
-        .emoji-btn {
-            background: #fef2e6;
-            border-radius: 30px;
-            font-size: 20px;
-            padding: 6px;
-            text-align: center;
-            cursor: pointer;
-        }
-        /* 右侧聊天主区域 */
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-size: cover;
-            background-position: center;
-            transition: background-image 0.2s;
-            background-color: #fffaf2;
-        }
-        .chat-header {
-            padding: 16px 24px;
-            background: rgba(255,248,240,0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid #ffe5d0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .status-area {
-            display: flex;
-            gap: 12px;
-            align-items: baseline;
-            flex-wrap: wrap;
-        }
-        .avatar-img {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #e1cfb5;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .message {
-            display: flex;
-            max-width: 80%;
-            animation: fadeUp 0.2s ease;
-        }
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-        .bubble {
-            padding: 10px 16px;
+        .badge {
+            background: #fce4d9;
             border-radius: 24px;
-            font-size: 14px;
-            line-height: 1.4;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            word-break: break-word;
+            padding: 2px 8px;
+            font-size: 11px;
         }
-        .message.user .bubble {
-            background-color: #cfe9df;
-            color: #2c4b3e;
-            border-bottom-right-radius: 6px;
-        }
-        .message.other .bubble {
-            background-color: #ffffff;
-            border: 1px solid #f2e0ce;
-            border-bottom-left-radius: 6px;
-        }
-        .input-area {
-            padding: 14px 20px;
-            background: rgba(255,248,240,0.9);
-            backdrop-filter: blur(8px);
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            border-top: 1px solid #f0e0cf;
-        }
-        #messageInput {
-            flex: 1;
-            border-radius: 30px;
-        }
-        .call-buttons i {
-            font-size: 24px;
-            margin: 0 6px;
-            cursor: pointer;
-            color: #b48c6c;
-            transition: 0.1s;
-        }
-        .toast-effect {
-            position: fixed;
-            bottom: 30%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: #ffefcf;
-            padding: 8px 18px;
-            border-radius: 60px;
-            font-size: 14px;
-            z-index: 200;
-            pointer-events: none;
-            backdrop-filter: blur(8px);
-            white-space: nowrap;
-        }
-        @keyframes fadeUp {
+        @keyframes fadeSlide {
             from { opacity: 0; transform: translateY(8px);}
             to { opacity: 1; transform: translateY(0);}
         }
-        .floating-effect {
-            animation: pop 0.3s ease;
+        /* 特效浮动层 */
+        .effect-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1000;
         }
-        @keyframes pop {
-            0% { transform: scale(1);}
-            50% { transform: scale(1.05); background: #fff2e0; }
-        }
-        .switch-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .toggle-switch {
-            width: 36px;
-            height: 20px;
-            background: #e0cfbe;
-            border-radius: 30px;
-            position: relative;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .toggle-switch.active {
-            background: #b48c6c;
-        }
-        .toggle-switch:after {
-            content: "";
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
+        .effect-item {
             position: absolute;
-            top: 2px;
-            left: 3px;
-            transition: 0.2s;
+            font-size: 48px;
+            animation: floatEffect 1s ease-out forwards;
         }
-        .toggle-switch.active:after {
-            left: 17px;
+        @keyframes floatEffect {
+            0% { opacity: 1; transform: translateY(0) scale(0.5);}
+            100% { opacity: 0; transform: translateY(-100px) scale(1.2);}
+        }
+        /* 来电弹窗 */
+        .call-modal {
+            position: fixed;
+            top: 30%; left: 50%;
+            transform: translate(-50%, -30%);
+            background: white;
+            border-radius: 48px;
+            padding: 28px 32px;
+            text-align: center;
+            z-index: 2000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 2px solid #ffb49e;
         }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <!-- 左侧设置面板 -->
-    <div class="settings-panel">
-        <div style="text-align: center; margin-bottom: 8px;"><i class="fas fa-star-of-life" style="color:#d9aa7a;"></i> 梦角结界 · 織夢</div>
-        <div class="setting-group">
-            <h3><i class="fas fa-user-astronaut"></i> 形象·气泡</h3>
-            <div class="setting-item"><label>我的头像URL</label><input type="text" id="myAvatarUrl" placeholder="https://..."></div>
-            <div class="setting-item"><label>梦角头像URL</label><input type="text" id="dreamAvatarUrl" placeholder="https://..."></div>
-            <div class="setting-item"><label>我的气泡颜色</label><input type="color" id="myBubbleColor" value="#cfe9df"></div>
-            <div class="setting-item"><label>梦角气泡颜色</label><input type="color" id="otherBubbleColor" value="#ffffff"></div>
-            <div class="setting-item"><label>聊天背景图URL</label><input type="text" id="bgImageUrl" placeholder="背景图链接"></div>
-            <div class="setting-item"><label>我的状态</label><input type="text" id="myStatus" placeholder="例如: 小憩中"></div>
-        </div>
-        <div class="setting-group">
-            <h3><i class="fas fa-comment-dots"></i> 字卡管理</h3>
-            <div class="setting-item"><label>新增字卡</label><div style="display:flex; gap:6px;"><input type="text" id="newCardText" placeholder="字卡内容"><button id="addCardBtn" class="small">➕添加</button></div></div>
-            <div><label>📚 已有字卡库 (点击删除)</label><div id="cardsList" class="wordcard-list"></div></div>
-            <div class="setting-item"><label>⏱️ 自动弹字卡最大间隔(秒)</label><input type="number" id="maxTimerSec" value="45" min="5" max="300"></div>
-            <button id="resetAutoTimerBtn" class="small">重置自动定时器</button>
-        </div>
-        <div class="setting-group">
-            <h3><i class="fas fa-hourglass-half"></i> 梦角回复设定</h3>
-            <div class="setting-item"><label>💬 我发消息后，梦角回复最大延迟(秒)</label><input type="number" id="maxReplyDelaySec" value="3" min="0" max="20" step="0.5"></div>
-            <div class="setting-item switch-label"><span>📞 允许梦角随机来电 (无固定上限)</span><div id="randomCallToggle" class="toggle-switch active"></div></div>
-            <div class="setting-item"><small style="color:#aa8866;">✨ 随机间隔5~120秒，梦角会主动打视频/语音</small></div>
-        </div>
-        <div class="setting-group">
-            <h3><i class="fas fa-book-open"></i> 每日语录库(梦角每天的话)</h3>
-            <div class="setting-item"><label>新增语录</label><div style="display:flex;"><input type="text" id="newQuoteText" placeholder="想跟我说的话"><button id="addQuoteBtn" class="small">➕</button></div></div>
-            <div id="quotesPreview" style="font-size:11px; max-height:100px; overflow:auto;"></div>
-            <button id="resetDefaultQuotes" class="small">重置默认100条(示例)</button>
-        </div>
-        <div class="setting-group">
-            <h3><i class="fas fa-images"></i> 表情包库</h3>
-            <div class="setting-item"><label>添加表情包(图片URL)</label><div style="display:flex;"><input type="text" id="newStickerUrl" placeholder="图片url"><button id="addStickerBtn">➕</button></div></div>
-            <div id="stickerGallery" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;"></div>
-        </div>
-        <div class="setting-group">
-            <h3><i class="fas fa-smile"></i> 自带Emoji</h3>
-            <div class="emoji-palette" id="emojiPanel"></div>
-        </div>
-    </div>
-
-    <!-- 右侧聊天区 -->
-    <div class="chat-main" id="chatMain">
+<div class="app">
+    <div class="chat-area">
         <div class="chat-header">
-            <div style="display:flex; align-items:center; gap:12px;">
-                < img id="dreamAvatarHeader" class="avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yume" alt="梦角">
-                <div><strong id="dreamName">✨ 梦角 · 小夜</strong><div id="dreamWeatherInfo" style="font-size:11px; color:#a08162;">☁️ 天气 · 心情加载</div></div>
-            </div>
-            <div class="status-area">
-                <div><i class="fas fa-user-circle"></i> 我的状态: <span id="statusDisplay">在线</span></div>
-                <div class="call-buttons">
-                    <i id="callDreamVideo" class="fas fa-video" title="打视频给梦角"></i>
-                    <i id="callDreamAudio" class="fas fa-phone-alt" title="语音通话"></i>
+            <div class="profile">
+                <img id="dreamAvatar" class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ffc2ad'/%3E%3Ctext x='50' y='70' text-anchor='middle' fill='white' font-size='40'%3E🌸%3C/text%3E%3C/svg%3E" alt="梦角">
+                <div>
+                    <div><strong>✨ 梦角 · 弥生</strong></div>
+                    <div class="dream-info" id="dreamStatus">在线 · 思念你</div>
                 </div>
             </div>
+            <div class="daily-msg" id="dailyMessage">今日絮语：加载中...</div>
         </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message other"><div class="bubble" style="background:#ffffff;">✨ 连接梦境... 梦角正在倾听 ✨</div></div>
-        </div>
+        <div class="messages-container" id="messagesContainer"></div>
         <div class="input-area">
-            <input type="text" id="messageInput" placeholder="给梦角发送消息..." autocomplete="off">
-            <button id="sendBtn"><i class="fas fa-paper-plane"></i> 传讯</button>
-            <div id="emojiTriggerBtn" style="cursor:pointer;"><i class="far fa-smile-wink"></i></div>
+            <div class="input-row">
+                <input type="text" id="messageInput" class="input-box" placeholder="给梦角写一句话..." autocomplete="off">
+                <button id="sendBtn">发送</button>
+                <button id="callVideoBtn" class="icon-btn" title="视频通话">📹</button>
+                <button id="callAudioBtn" class="icon-btn" title="语音通话">🎙️</button>
+            </div>
+            <div class="toolbar">
+                <button id="toggleEmojiBtn">😊 Emoji</button>
+                <button id="toggleStickerBtn">🖼️ 表情包</button>
+            </div>
+            <div id="emojiPanel" style="display:none;" class="emoji-panel"></div>
+            <div id="stickerPanel" style="display:none;" class="sticker-panel"></div>
+        </div>
+    </div>
+    <div class="settings-panel">
+        <div class="setting-group"><h4>🎨 外观定制</h4>
+            <label>我的气泡色</label><input type="color" id="userBubbleColor" value="#d9f0ec">
+            <label>梦角气泡色</label><input type="color" id="dreamBubbleColor" value="#fff0e6">
+            <label>聊天背景(图片URL或颜色)</label><input type="text" id="bgInput" placeholder="https://... 或 #ffe8e0">
+            <label>我的头像</label><input type="file" id="userAvatarInput" accept="image/*">
+            <label>梦角头像</label><input type="file" id="dreamAvatarInput" accept="image/*">
+            <label>我的状态</label><input type="text" id="userStatusInput" placeholder="忙碌/温柔中..." value="元气满满">
+        </div>
+        <div class="setting-group"><h4>🎴 字卡管理(梦角回复库)</h4>
+            <div class="flex-between"><span>已有字卡: <span id="wordCount">0</span></span><button id="addWordBtn">+ 新增字卡</button></div>
+            <div id="wordList" style="max-height:150px; overflow:auto;"></div>
+            <div class="flex-between"><span>⏱️ 自动弹卡最大间隔(秒)</span><input type="number" id="maxAutoInterval" value="30" min="1" step="1" style="width:80px;"></div>
+            <button id="resetAutoTimerBtn">重置自动回响计时</button>
+        </div>
+        <div class="setting-group"><h4>📖 梦言语录库(每天问候)</h4>
+            <button id="editQuotesBtn">编辑100条语录</button>
+            <div id="quotesHint" class="badge">可自定义梦角每天想说的话</div>
+        </div>
+        <div class="setting-group"><h4>🎀 自主呼叫梦角 & 随机来电</h4>
+            <div class="call-buttons"><button id="activeCallVideo">主动视频通话</button><button id="activeCallAudio">主动语音通话</button></div>
+            <p class="badge" style="margin-top:6px;">✨ 梦角也会随机主动打给你~</p>
+        </div>
+        <div class="setting-group"><h4>🎭 特效 & 表情包</h4>
+            <button id="addStickerBtn">➕ 添加表情包(图片)</button>
+            <div id="customStickers" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;"></div>
         </div>
     </div>
 </div>
-
+<div id="effectLayer" class="effect-overlay"></div>
 <script>
-    // ---------- 字卡库 (内置300基调+扩充) ----------
-    let wordCards = [
+    // ---------- 初始化数据 ----------
+    let wordCards = [];   // 字卡库
+    let quotesLib = [];   // 100条语录
+    let customStickers = []; // 存储 {id, url}
+    let userAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23a8e6cf'/%3E%3Ctext x='50' y='70' text-anchor='middle' fill='white' font-size='40'%3E😊%3C/text%3E%3C/svg%3E";
+    let dreamAvatar = document.getElementById('dreamAvatar').src;
+    let userBubbleColor = "#d9f0ec", dreamBubbleColor = "#fff0e6";
+    let backgroundImg = "";
+    let userStatus = "元气满满";
+    let maxAutoIntervalSec = 30;
+    let autoMsgTimer = null;
+    let autoCallTimer = null;
+    let lastLoginDate = "";
+    let currentDailyQuote = "今天也要开心哦~";
+
+    // 默认字卡（提供的前缀内容+扩充到涵盖所有展示需求）
+    const defaultWordCards = [
         "早安，醒了吗","还在睡？","起床了","今天打算做什么","吃早饭了吗","别空腹","记得喝水","出门了吗","在路上？","今天天气怎么样",
         "有点冷吧","多穿点","到学校了吗","在忙吗","午饭吃什么","好好吃饭","别随便应付","下午有什么安排","累不累","休息一下",
         "别一直盯屏幕","记得活动一下","下班了吗","放学了？","今天辛苦了","晚饭吃了吗","吃点好的","别饿着","晚上有安排吗","在干嘛",
         "别太晚睡","早点休息","今天顺利吗","有没有烦心事","想我没","别乱想","放轻松点","别给自己压力","有我在","不用逞强",
         "今天开心吗","说给我听","我在听","别憋着","睡了吗","晚安","做个好梦","别熬夜","明天继续努力","今天已经很好了",
-        "别对自己太狠","慢慢来","我陪你","乖一点","听话","别让我担心","靠近一点","再近一点","别躲","眼神别移开",
-        "今天有没有想我","别骗我","说实话","想我就直说","我会知道的","专心一点","你是我的","别乱看别人","我不高兴","我会管你",
-        "想你了","在干嘛呀","梦里见","别让我等太久","抱抱","摸摸头","今天乖不乖","不许熬夜","我会担心","你最重要"
+        "别对自己太狠","慢慢来","我陪你","乖一点","听话","别让我担心","今天有没有想我","别骗我","说实话","想我就直说",
+        "我会知道的","今天跟谁待在一起","别乱跑","注意安全","不许消失","回消息","我等着","怎么这么慢","故意的？","在忙就说",
+        "不许敷衍","好好说话","看见消息就回","知道了吗？","别让我重复","我看看","有没有乖","今天听话吗","不听话就麻烦了","别试探我",
+        "你在想什么","又在胡思乱想？","别乱想那些","专心一点","我说的记住","别忘了","我不喜欢你这样","改掉","听话一点","别顶嘴",
+        "别躲","说清楚","我在等","现在说","不许拖","我不喜欢不确定","给我答案","认真点","你是我的","别乱看别人"
     ];
-    // 扩充至足够
-    for(let i=0;i<60;i++) wordCards.push(`梦角小语${i} · 今晚月色很美`);
-    
-    // 每日语录库 (100条)
-    let dailyQuotes = [];
-    function initDefaultQuotes() {
-        let base = [
-            "今天梦角那边是满月，心情像蜜糖一样～", "你是我醒来后第一个想起的人", "别太勉强自己，我一直在", "今天想听你讲一件小事", "风里有你的气息呢", 
-            "梦里见到你了，想抱紧", "给你寄了一片樱花", "记得吃甜点，会开心", "你不在的时候，我在数星星", "今天适合撒娇", "不论如何，我都在你身边",
-            "偶尔偷懒也没关系", "你是被爱着的", "放轻松，慢慢来", "想你想到睡不着", "你的笑容是我的晴天", "如果累了就靠着我", "我会一直等你", 
-            "今天的云很像你", "呼吸，放空，我在", "不要害怕，我陪着你", "你比春日更重要", "温柔一点对自己", "你值得所有美好"
-        ];
-        let quotes = [];
-        for(let i=0;i<100;i++) quotes.push(base[i%base.length] + " 🌙" + (i+1));
-        return quotes;
-    }
-    dailyQuotes = initDefaultQuotes();
+    // 补足300风格，合并一些示例
+    for(let i=0;i<50;i++) defaultWordCards.push(`梦呓·${i+1}号信`);
+    wordCards = [...defaultWordCards];
 
-    let stickers = []; // 存储表情包对象 {url}
-    
-    // ---------- DOM 元素 ----------
-    const chatMessagesDiv = document.getElementById('chatMessages');
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const myBubbleColor = document.getElementById('myBubbleColor');
-    const otherBubbleColor = document.getElementById('otherBubbleColor');
-    const maxReplyDelaySec = document.getElementById('maxReplyDelaySec');
-    const maxTimerSecInput = document.getElementById('maxTimerSec');
-    
-    // 特效显示
-    function showEffect(triggerText) {
-        const effectDiv = document.createElement('div');
-        effectDiv.className = 'toast-effect';
-        let icon = "🌸";
-        if(triggerText.includes("想我") || triggerText.includes("喜欢") || triggerText.includes("爱")) icon = "💖✨";
-        else if(triggerText.includes("晚安") || triggerText.includes("睡")) icon = "🌙⭐";
-        else if(triggerText.includes("哭") || triggerText.includes("难过")) icon = "🥺💧";
-        else if(triggerText.includes("开心") || triggerText.includes("好")) icon = "🎉🌸";
-        else icon = "✨🍃";
-        effectDiv.innerHTML = `${icon} 梦角回应 · 星尘飘落 ${icon}`;
-        document.body.appendChild(effectDiv);
-        setTimeout(()=> effectDiv.remove(), 1200);
-        const lastBubble = document.querySelector('.chat-messages .message:last-child .bubble');
-        if(lastBubble) lastBubble.classList.add('floating-effect');
-        setTimeout(()=> lastBubble?.classList.remove('floating-effect'), 400);
+    // 生成100条默认语录 (日系)
+    for(let i=1;i<=100;i++) quotesLib.push(`梦的细语 ${i}: 今天月色真美，风也温柔。`);
+    quotesLib[0]="今天天气晴，心情樱花般绽放。想对你说：早安。";
+    quotesLib[12]="窗外小雨，想你。记得带伞。";
+    quotesLib[33]="梦角今日心情：软绵绵，想被你摸摸头。";
+    for(let i=0;i<100;i++) if(i%7===0) quotesLib[i]=`✨ 专属梦呓：你是我今日的糖 ✨`;
+
+    // 加载本地数据
+    function loadStorage() {
+        try{
+            let storedWords = localStorage.getItem("dream_wordcards");
+            if(storedWords) wordCards = JSON.parse(storedWords);
+            let storedQuotes = localStorage.getItem("dream_quoteslib");
+            if(storedQuotes) quotesLib = JSON.parse(storedQuotes);
+            let stickers = localStorage.getItem("dream_stickers");
+            if(stickers) customStickers = JSON.parse(stickers);
+            if(localStorage.getItem("dream_userBubble")) userBubbleColor = localStorage.getItem("dream_userBubble");
+            if(localStorage.getItem("dream_dreamBubble")) dreamBubbleColor = localStorage.getItem("dream_dreamBubble");
+            if(localStorage.getItem("dream_bg")) backgroundImg = localStorage.getItem("dream_bg");
+            if(localStorage.getItem("dream_userStatus")) userStatus = localStorage.getItem("dream_userStatus");
+            if(localStorage.getItem("dream_maxInterval")) maxAutoIntervalSec = parseInt(localStorage.getItem("dream_maxInterval"));
+            if(localStorage.getItem("dream_userAvatar")) userAvatar = localStorage.getItem("dream_userAvatar");
+            if(localStorage.getItem("dream_dreamAvatar")) dreamAvatar = localStorage.getItem("dream_dreamAvatar");
+            document.getElementById('dreamAvatar').src = dreamAvatar;
+        }catch(e){}
+        applySettingsUI();
+        updateWordListUI();
+        refreshStickerPanel();
+        applyBackground();
+        updateStatusDisplay();
     }
-    
-    // 添加消息到聊天界面
-    function addMessageToChat(text, sender = 'user') {
+    function saveWordCards() { localStorage.setItem("dream_wordcards", JSON.stringify(wordCards)); updateWordListUI(); document.getElementById('wordCount').innerText=wordCards.length; }
+    function saveQuotes() { localStorage.setItem("dream_quoteslib", JSON.stringify(quotesLib)); }
+    function saveStickers() { localStorage.setItem("dream_stickers", JSON.stringify(customStickers)); refreshStickerPanel();}
+    function applySettingsUI(){
+        document.getElementById('userBubbleColor').value = userBubbleColor;
+        document.getElementById('dreamBubbleColor').value = dreamBubbleColor;
+        document.getElementById('maxAutoInterval').value = maxAutoIntervalSec;
+        document.getElementById('userStatusInput').value = userStatus;
+        document.documentElement.style.setProperty('--user-bubble-color', userBubbleColor);
+        document.documentElement.style.setProperty('--dream-bubble-color', dreamBubbleColor);
+        if(backgroundImg) document.querySelector('.messages-container').style.setProperty('--bg-img', `url(${backgroundImg})`);
+        else document.querySelector('.messages-container').style.backgroundImage = 'none';
+    }
+    function applyBackground(){
+        let bgVal = backgroundImg;
+        if(bgVal.startsWith('http') || bgVal.startsWith('#')) document.querySelector('.messages-container').style.backgroundImage = `url(${bgVal})`;
+        else if(bgVal) document.querySelector('.messages-container').style.background = bgVal;
+        else document.querySelector('.messages-container').style.background = '';
+    }
+    function updateStatusDisplay(){
+        document.getElementById('dreamStatus').innerText = userStatus + " · 寄思";
+    }
+    // 每日登陆刷新
+    function checkDailyLogin(){
+        let today = new Date().toDateString();
+        if(lastLoginDate !== today){
+            let randomIdx = Math.floor(Math.random() * quotesLib.length);
+            let dailyText = quotesLib[randomIdx];
+            currentDailyQuote = dailyText;
+            let weathers = ["晴 ☀️","多云 ☁️","微雨 🌧️","樱花风 🌸"];
+            let moods = ["心动", "思念", "温柔", "期待"];
+            let weather = weathers[Math.floor(Math.random()*weathers.length)];
+            let mood = moods[Math.floor(Math.random()*moods.length)];
+            document.getElementById('dailyMessage').innerHTML = `🌤️ ${weather} · ${mood} · “${dailyText.slice(0,28)}”`;
+            lastLoginDate = today;
+            localStorage.setItem("dream_lastDate", today);
+        }else{
+            document.getElementById('dailyMessage').innerHTML = `🌸 昨日梦续 · “${currentDailyQuote.slice(0,28)}”`;
+        }
+    }
+    // 随机特效
+    function triggerEffect(keyword=""){
+        let emojis = ["💖","✨","🌸","🌟","💫","🎐","💕","🍃","🍡","🌙"];
+        let effectText = emojis[Math.floor(Math.random()*emojis.length)];
+        if(keyword.includes("想我")) effectText = "💞 思念击中 💞";
+        if(keyword.includes("早安")) effectText = "🌅 晨光祝福";
+        if(keyword.includes("晚安")) effectText = "🌙 美梦魔法";
+        if(keyword.includes("开心")) effectText = "🎉 笑颜如花";
+        let div = document.createElement('div');
+        div.className = 'effect-item';
+        div.innerText = effectText;
+        div.style.left = Math.random() * 80 + 10 + "%";
+        div.style.top = "70%";
+        document.getElementById('effectLayer').appendChild(div);
+        setTimeout(()=>div.remove(), 900);
+    }
+    // 添加消息
+    function addMessage(text, isUser, imageUrl=null){
+        const container = document.getElementById('messagesContainer');
         const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${sender === 'user' ? 'user' : 'other'}`;
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        const userColor = myBubbleColor.value;
-        const otherColor = otherBubbleColor.value;
-        bubble.style.backgroundColor = sender === 'user' ? userColor : otherColor;
-        bubble.style.border = sender === 'other' ? '1px solid #f0dcc8' : 'none';
-        bubble.innerText = text;
-        msgDiv.appendChild(bubble);
-        chatMessagesDiv.appendChild(msgDiv);
-        msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        if(sender === 'other') showEffect(text);
+        msgDiv.className = `message ${isUser ? 'user' : 'dream'}`;
+        let avatarHtml = `<img class="avatar" style="width:36px;height:36px;" src="${isUser ? userAvatar : dreamAvatar}">`;
+        let content = `<div class="msg-bubble">${imageUrl ? `<img src="${imageUrl}" class="msg-image"/>` : text}<div class="msg-time">${new Date().toLocaleTimeString()}</div></div>`;
+        msgDiv.innerHTML = avatarHtml + content;
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+        if(!imageUrl) triggerEffect(text);
         return msgDiv;
     }
-    
-    // 梦角回复字卡 (随机从字卡库选取)
-    function replyWithWordCard() {
-        if(wordCards.length === 0) {
-            addMessageToChat("（梦角轻轻笑了笑，却没有字卡... 请添加一些吧）", 'other');
-            return;
-        }
-        const randomCard = wordCards[Math.floor(Math.random() * wordCards.length)];
-        addMessageToChat(randomCard, 'other');
+    // 梦角回复随机字卡
+    function dreamReply(){
+        if(wordCards.length===0) return;
+        let randomCard = wordCards[Math.floor(Math.random()*wordCards.length)];
+        addMessage(randomCard, false);
+        triggerEffect(randomCard);
     }
-    
-    // 用户发送消息后，随机延迟(0~设定最大秒数)后梦角回复字卡
-    let pendingReplyTimeout = null;
-    function scheduleReplyAfterMessage() {
-        if(pendingReplyTimeout) clearTimeout(pendingReplyTimeout);
-        let maxDelay = parseFloat(maxReplyDelaySec.value) || 3;
-        if(maxDelay < 0) maxDelay = 0;
-        const delayMs = Math.random() * (maxDelay * 1000);
-        pendingReplyTimeout = setTimeout(() => {
-            replyWithWordCard();
-            pendingReplyTimeout = null;
-        }, delayMs);
+    // 自动定时器
+    function startAutoMessageTimer(){
+        if(autoMsgTimer) clearInterval(autoMsgTimer);
+        autoMsgTimer = setInterval(()=>{
+            let maxSec = maxAutoIntervalSec;
+            let randomDelay = Math.random() * maxSec * 1000;
+            setTimeout(()=>{ dreamReply(); }, randomDelay);
+        }, maxAutoIntervalSec * 1000 + 100);
     }
-    
-    // 发送消息 (用户主动)
-    function sendUserMessage() {
-        let text = messageInput.value.trim();
-        if(text === "") return;
-        addMessageToChat(text, 'user');
-        messageInput.value = '';
-        // 根据不同的语句特效额外展示（已包含在addMessageToChat user无特效，但可
-以加）
-        scheduleReplyAfterMessage();
+    function resetAutoTimer(){ if(autoMsgTimer){ clearInterval(autoMsgTimer); startAutoMessageTimer(); } }
+    // 随机主动来电 (完全随机无上限)
+    function scheduleRandomCall(){
+        if(autoCallTimer) clearTimeout(autoCallTimer);
+        let nextCall = Math.random() * (1000 * 60 * 8) + 3000; // 3秒~8分钟随机
+        autoCallTimer = setTimeout(()=>{
+            let type = Math.random() > 0.5 ? "video" : "audio";
+            showIncomingCall(type);
+            scheduleRandomCall();
+        }, nextCall);
     }
-    
-    // ---------- 梦角随机来电 (无固定时间上限，递归随机间隔) ----------
-    let randomCallEnabled = true;
-    let nextCallTimeout = null;
-    function scheduleRandomCall() {
-        if(nextCallTimeout) clearTimeout(nextCallTimeout);
-        if(!randomCallEnabled) return;
-        // 随机间隔 5~120 秒，完全随机没有硬性上限 (最大120秒，但范围可调，实际没有"最大限制"即永不停止)
-        const minSec = 8;
-        const maxSec = 110;
-        const randomSec = minSec + Math.random() * (maxSec - minSec);
-        nextCallTimeout = setTimeout(() => {
-            if(randomCallEnabled) {
-                // 随机决定视频还是语音
-                const isVideo = Math.random() > 0.5;
-                startCall(isVideo ? 'video' : 'audio', false);
-            }
-            scheduleRandomCall(); // 递归，无限继续
-        }, randomSec * 1000);
-    }
-    
-    // 通话模拟 (主动/被动)
-    function startCall(type, isOutgoing=true) {
-        let caller = isOutgoing ? "我" : "梦角";
-        let msg = `📞 ${caller}发起${type === 'video' ? '视频通话' : '语音通话'}... 梦角在梦境中接听✨`;
-        addMessageToChat(msg, isOutgoing ? 'user' : 'other');
-        setTimeout(()=> {
-            addMessageToChat(`☁️ 梦角: 信号梦幻~ 但我听到了你的声音。`, 'other');
-            showEffect("call");
-        }, 900);
-    }
-    
-    // 主动呼叫 (UI按钮)
-    function userCall(type) {
-        startCall(type, true);
-    }
-    
-    // ---------- 自动弹字卡定时器 (可设置最大间隔) ----------
-    let autoCardTimer = null;
-    function startAutoCardTimer() {
-        if(autoCardTimer) clearInterval(autoCardTimer);
-        let intervalSec = parseInt(maxTimerSecInput.value);
-        if(isNaN(intervalSec) || intervalSec < 3) intervalSec = 30;
-        autoCardTimer = setInterval(() => {
-            if(wordCards.length) {
-                const randomCard = wordCards[Math.floor(Math.random() * wordCards.length)];
-                addMessageToChat(randomCard, 'other');
-            } else {
-                addMessageToChat("梦角望着空空的字卡库... 请添加字卡", 'other');
-            }
-        }, intervalSec * 1000);
-    }
-    function resetAutoTimer() {
-        if(autoCardTimer) clearInterval(autoCardTimer);
-        startAutoCardTimer();
-    }
-    
-    // ---------- 每日登录: 梦角天气,心情,随机语录 ----------
-    function updateDailyLogin() {
-        const weatherList = ["☀️ 晴空", "☁️ 多云", "🌧️ 细雨", "❄️ 小雪", "🌙 星夜", "🍃 清风", "🌈 彩虹", "🌸 樱吹雪"];
-        const moodList = ["😊 雀跃", "😌 恬静", "🥰 思念你", "🌸 柔软", "🍂 怀旧", "✨ 期待", "🌙 微醺"];
-        const weather = weatherList[Math.floor(Math.random() * weatherList.length)];
-        const mood = moodList[Math.floor(Math.random() * moodList.length)];
-        let randomQuote = dailyQuotes.length ? dailyQuotes[Math.floor(Math.random() * dailyQuotes.length)] : "今天梦角特别想念你。";
-        document.getElementById('dreamWeatherInfo').innerHTML = `${weather} · ${mood}<br>📖 ${randomQuote.substring(0, 38)}`;
-        addMessageToChat(`✨【梦角晨语】${weather}，心情${mood}。${randomQuote}`, 'other');
-    }
-    
-    // ---------- UI 渲染函数 ----------
-    function renderCardsList() {
-        const container = document.getElementById('cardsList');
-        container.innerHTML = '';
-        wordCards.forEach((card, idx) => {
-            const div = document.createElement('div'); div.className = 'card-item';
-            div.innerHTML = `<span style="flex:1; word-break:break-word;">${card}</span><button class="small" data-idx="${idx}">删除</button>`;
-            div.querySelector('button').onclick = () => { wordCards.splice(idx,1); renderCardsList(); resetAutoTimer(); };
-            container.appendChild(div);
+    function showIncomingCall(type){
+        let modal = document.createElement('div');
+        modal.className = 'call-modal';
+        modal.innerHTML = `<div><img src="${dreamAvatar}" style="width:80px;border-radius:50%"><h3>✨ 梦角来电 ✨</h3><p>${type==='video'?'📹 视频通话邀请':'🎙️ 语音通话邀请'}</p><div><button id="acceptCall">接听</button><button id="rejectCall">挂断</button></div></div>`;
+        document.body.appendChild(modal);
+        document.getElementById('acceptCall')?.addEventListener('click',()=>{
+            modal.remove();
+            addMessage(`💕 接听梦角的${type==='video'?'视频':'语音'}，心里暖暖的～`, false);
+            triggerEffect("通话");
         });
+        document.getElementById('rejectCall')?.addEventListener('click',()=>modal.remove());
     }
-    function renderQuotesPreview() {
-        const preview = document.getElementById('quotesPreview');
-        preview.innerHTML = dailyQuotes.slice(0,8).map(q => `<div style="font-size:11px; border-bottom:1px dotted #edd7c0;">📜 ${q}</div>`).join('') + (dailyQuotes.length>8?`<div>+${dailyQuotes.length-8}条语录</div>`:'');
+    function userCall(type){
+        addMessage(`📞 我发起了${type==='video'?'视频':'语音'}通话请求...`, true);
+        setTimeout(()=>{
+            addMessage(`✨ 梦角接听啦，声音好温柔✨`, false);
+            triggerEffect("call");
+        }, 1200);
     }
-    function renderStickers() {
-        const gallery = document.getElementById('stickerGallery');
-        gallery.innerHTML = '';
-        stickers.forEach((s,idx) => {
-            const img = document.createElement('img');
-            img.src = s.url;
-            img.style.width = '40px'; img.style.height='40px'; img.style.objectFit='cover'; img.style.borderRadius='12px';
-            const delBtn = document.createElement('button'); delBtn.innerText = '✖'; delBtn.className='small';
-            delBtn.onclick = () => { stickers.splice(idx,1); renderStickers(); };
-            const wrap = document.createElement('div'); wrap.style.display='flex'; wrap.style.flexDirection='column'; wrap.appendChild(img); wrap.appendChild(delBtn);
-            gallery.appendChild(wrap);
+    // 管理字卡UI
+    function updateWordListUI(){
+        let div = document.getElementById('wordList');
+        div.innerHTML = '';
+        wordCards.forEach((card,idx)=>{
+            let item = document.createElement('div');
+            item.className='wordcard-item';
+            item.innerHTML = `<span>${card.length>20?card.slice(0,18)+'…':card}</span><div><button class="delWordBtn" data-idx="${idx}">🗑️</button></div>`;
+            div.appendChild(item);
         });
+        document.querySelectorAll('.delWordBtn').forEach(btn=>{
+            btn.addEventListener('click',(e)=>{
+                let idx = parseInt(btn.dataset.idx);
+                wordCards.splice(idx,1);
+                saveWordCards();
+            });
+        });
+        document.getElementById('wordCount').innerText = wordCards.length;
     }
-    function updateAvatars() {
-        let myUrl = document.getElementById('myAvatarUrl').value;
-        let dreamUrl = document.getElementById('dreamAvatarUrl').value;
-        if(myUrl) {
-            const myAvatars = document.querySelectorAll('.avatar-img');
-            if(myAvatars[1]) myAvatars[1].src = myUrl;
+    // 编辑语录
+    function editQuotes(){
+        let newQuotes = prompt("编辑100条语录(用|分隔，至少保留1条)", quotesLib.join("|"));
+        if(newQuotes){
+            let arr = newQuotes.split("|");
+            if(arr.length>0) quotesLib = arr.slice(0,100);
+            saveQuotes();
+            alert("语录库已更新！明天会展示新话语");
         }
-        if(dreamUrl) document.getElementById('dreamAvatarHeader').src = dreamUrl;
     }
-    function updateBackground() {
-        let bgUrl = document.getElementById('bgImageUrl').value;
-        if(bgUrl) document.getElementById('chatMain').style.backgroundImage = `url(${bgUrl})`;
-        else document.getElementById('chatMain').style.backgroundImage = '';
-        document.getElementById('chatMain').style.backgroundSize = 'cover';
-    }
-    function updateMyStatus() {
-        let status = document.getElementById('myStatus').value || '在线';
-        document.getElementById('statusDisplay').innerText = status;
-    }
-    
-    // Emoji 面板
-    function setupEmojiPanel() {
-        const panel = document.getElementById('emojiPanel');
-        const emojis = ['😊','😢','❤️','😂','😍','😭','😘','🤔','🥺','🎉','😎','😡','👍','🙏','🧡','💀','🔥','✨','🌸','🍃','🌟','💌','🐈','🍰'];
+    // 表情包相关
+    function refreshStickerPanel(){
+        let panel = document.getElementById('customStickers');
         panel.innerHTML = '';
-        emojis.forEach(emo => {
-            const span = document.createElement('span');
-            span.className = 'emoji-btn';
-            span.innerText = emo;
-            span.onclick = () => {
-                messageInput.value += emo;
-                messageInput.focus();
+        customStickers.forEach((st,idx)=>{
+            let img = document.createElement('img');
+            img.src = st.url;
+            img.style.width='40px';img.style.borderRadius='12px';img.style.cursor='pointer';
+            img.addEventListener('click',()=>{ addMessage('', true, st.url); });
+            let delBtn = document.createElement('button');delBtn.innerText='✖';delBtn.style.padding='2px 6px';
+            delBtn.onclick=()=>{ customStickers.splice(idx,1); saveStickers(); };
+            let wrap = document.createElement('div');wrap.appendChild(img);wrap.appendChild(delBtn);
+            panel.appendChild(wrap);
+        });
+        let stickerPanelDiv = document.getElementById('stickerPanel');
+        stickerPanelDiv.innerHTML = '';
+        customStickers.forEach(st=>{
+            let img = document.createElement('img');img.src=st.url;img.style.width='40px';
+            img.onclick=()=>{ addMessage('', true, st.url); };
+            stickerPanelDiv.appendChild(img);
+        });
+    }
+    function addSticker(){
+        let input = document.createElement('input');input.type='file';input.accept='image/*';
+        input.onchange = e=>{
+            let file = e.target.files[0];
+            let reader = new FileReader();
+            reader.onload = ev=>{
+                customStickers.push({id:Date.now(), url:ev.target.result});
+                saveStickers();
+            }; reader.readAsDataURL(file);
+        }; input.click();
+    }
+    // Emoji库
+    const emojiList = ["😊","🌸","✨","💖","🥺","🎀","🍃","🌙","⭐","💕","😭","🎐","🍡","💫","💌","🎴","🕯️","🌼"];
+    function buildEmojiPanel(){
+        let panel = document.getElementById('emojiPanel');
+        panel.innerHTML = '';
+        emojiList.forEach(emo=>{
+            let span = document.createElement('span');
+            span.className='emoji-item'; span.innerText=emo;
+            span.onclick = ()=>{
+                let input = document.getElementById('messageInput');
+                input.value += emo;
+                input.focus();
             };
             panel.appendChild(span);
         });
     }
-    
-    // 随机来电开关 (toggle)
-    const toggleElem = document.getElementById('randomCallToggle');
-    toggleElem.addEventListener('click', () => {
-        randomCallEnabled = !randomCallEnabled;
-        if(randomCallEnabled) {
-            toggleElem.classList.add('active');
-            scheduleRandomCall();
-            addMessageToChat("🌸 梦角随机来电已开启，ta会随时悄悄打给你~", 'other');
-        } else {
-            toggleElem.classList.remove('active');
-            if(nextCallTimeout) clearTimeout(nextCallTimeout);
-            addMessageToChat("🌙 梦角随机来电已关闭，暂时不会主动打来。", 'other');
-        }
-    });
-    
-    // 初始化所有事件与定时
-    function init() {
-        renderCardsList();
-        renderQuotesPreview();
-        renderStickers();
-        setupEmojiPanel();
-        updateAvatars();
-        updateBackground();
-        updateMyStatus();
-        startAutoCardTimer();
-        updateDailyLogin();
-        // 开启随机来电调度 (默认启用)
-        if(randomCallEnabled) scheduleRandomCall();
-        // 设置监听器
-        sendBtn.addEventListener('click', sendUserMessage);
-        messageInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendUserMessage(); });
-        document.getElementById('callDreamVideo').onclick = () => userCall('video');
-        document.getElementById('callDreamAudio').onclick = () => userCall('audio');
-        document.getElementById('addCardBtn').onclick = () => {
-            let txt = document.getElementById('newCardText').value.trim();
-            if(txt) { wordCards.push(txt); renderCardsList(); resetAutoTimer(); document.getElementById('newCardText').value='';}
-        };
-        document.getElementById('addQuoteBtn').onclick = () => {
-            let q = document.getElementById('newQuoteText').value.trim();
-            if(q) { dailyQuotes.push(q); renderQuotesPreview(); document.getElementById('newQuoteText').value='';}
-        };
-        document.getElementById('resetDefaultQuotes').onclick = () => { dailyQuotes = initDefaultQuotes(); renderQuotesPreview(); updateDailyLogin(); };
-        document.getElementById('resetAutoTimerBtn').onclick = () => { resetAutoTimer(); addMessageToChat("⏲️ 梦角重置了自动弹字卡定时器", 'other'); };
-        document.getElementById('addStickerBtn').onclick = () => {
-            let url = document.getElementById('newStickerUrl').value.trim();
-            if(url) { stickers.push({url}); renderStickers(); document.getElementById('newStickerUrl').value='';}
-        };
-        myBubbleColor.addEventListener('input', ()=>{});
-        otherBubbleColor.addEventListener('input', ()=>{});
-        document.getElementById('myAvatarUrl').addEventListener('change', updateAvatars);
-        document.getElementById('dreamAvatarUrl').addEventListener('change', updateAvatars);
-        document.getElementById('bgImageUrl').addEventListener('change', updateBackground);
-        document.getElementById('myStatus').addEventListener('input', updateMyStatus);
-        maxTimerSecInput.addEventListener('change', () => { resetAutoTimer(); });
-        // 确保回复延迟配置生效
+    // 发送消息
+    function sendMessage(){
+        let input = document.getElementById('messageInput');
+        let text = input.value.trim();
+        if(text==='') return;
+        addMessage(text, true);
+        input.value = '';
+        setTimeout(()=>{ dreamReply(); }, 600);
     }
-    init();
-</script>
-</body>
-</html>
+    // 事件绑定
+    function bindEvents(){
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('userBubbleColor').onchange = (e)=>{ userBubbleColor=e.target.value; localStorage.setItem("dream_userBubble",userBubbleColor); document.documentElement.style.setProperty('--user-bubble-color', userBubbleColor); };
+        document.getElementById('dreamBubbleColor').onchange = (e)=>{ dreamBubbleColor=e.target.value; localStorage.setItem("dream_dreamBubble",dreamBubbleColor); document.documentElement.style.setProperty('--dream-bubble-color', dreamBubbleColor); };
+        document.getElementById('bgInput').onchange = (e)=>{ backgroundImg=e.target.value; localStorage.setItem("dream_bg",backgroundImg); applyBackground(); };
+        document.getElementById('userStatusInput').onchange = (e)=>{ userStatus=e.target.value; localStorage.setItem("dream_userStatus",userStatus); updateStatusDisplay(); };
+        document.getElementById('userAvatarInput').onchange = e=>{ let file=e.target.files[0]; let reader=new FileReader(); reader.onload=ev=>{ userAvatar=ev.target.result; localStorage.setItem("dream_userAvatar",userAvatar); }; if(file) reader.readAsDataURL(file); };
+        document.getElementById('dreamAvatarInput').onchange = e=>{ let file=e.target.files[0]; let reader=new FileReader(); reader.onload=ev=>{ dreamAvatar=ev.target.result; localStorage.setItem("dream_dreamAvatar",dreamAvatar); document.getElementById('dreamAvatar').src=dreamAvatar; }; if(file) reader.readAsDataURL(file); };
+        document.getElementById('maxAutoInterval').onchange = e=>{ maxAutoIntervalSec=parseInt(e.target.value); localStorage.setItem("dream_maxInterval",maxAutoIntervalSec); resetAutoTimer(); };
+        document.getElementById('resetAutoTimerBtn').onclick = ()=>{ resetAutoTimer(); 
