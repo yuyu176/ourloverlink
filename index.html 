@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>💗 专属爱恋 · 老婆and老公</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+    }
+
+    body {
+      background: #ffe4ec;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    /* 主卡片——粉色可爱简约 */
+    .app-card {
+      width: 100%;
+      max-width: 500px;
+      height: 780px;
+      background: #fff0f5;
+      border-radius: 36px;
+      box-shadow: 0 20px 40px rgba(245, 150, 180, 0.25), 0 6px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+      border: 1px solid #ffd9e4;
+    }
+
+    /* 头部 — 双头像 + 标题 */
+    .chat-header {
+      padding: 18px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 220, 230, 0.6);
+      border-bottom: 2px dashed #ffb6c1;
+    }
+
+    .avatar-pair {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #ffe0f0;
+      border: 3px solid white;
+      box-shadow: 0 4px 8px #fbb6c2;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .avatar:hover {
+      transform: scale(1.02);
+    }
+
+    .avatar-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffc1cc;
+      color: white;
+      font-weight bold;
+      font-size: 24px;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #b1546c;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0 #ffe0e7;
+    }
+
+    .settings-toggle {
+      background: #ffe4ed;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 30px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px #fbb6c2;
+      color: #b34e67;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.15s;
+    }
+    .settings-toggle:hover {
+      background: #ffd0da;
+    }
+
+    /* 聊天区域——背景可换 */
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #ffeef2;  /* fallback */
+      transition: background-image 0.3s;
+    }
+
+    /* 消息气泡 */
+    .message-row {
+      display: flex;
+      width: 100%;
+    }
+    .message-row.me {
+      justify-content: flex-end;
+    }
+    .message-row.dream {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 24px;
+      word-break: break-word;
+      box-shadow: 0 3px 6px rgba(230, 120, 140, 0.15);
+      font-size: 15px;
+      line-height: 1.4;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .me .bubble {
+      background: #ffced9;
+      border-bottom-right-radius: 6px;
+      color: #632c3c;
+      border: 1px solid #ffb7c5;
+    }
+
+    .dream .bubble {
+      background: #ffffffd6;
+      backdrop-filter: blur(4px);
+      border-bottom-left-radius: 6px;
+      color: #7a3e4f;
+      border: 1px solid #ffe2ed;
+      box-shadow: 0 4px 8px #fec7d3;
+    }
+
+    .bubble img {
+      max-width: 180px;
+      max-height: 180px;
+      border-radius: 18px;
+      margin-top: 6px;
+      border: 2px solid white;
+    }
+
+    .time-meta {
+      font-size: 10px;
+      opacity: 0.65;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    /* 输入区域 */
+    .input-panel {
+      background: #ffeef4;
+      padding: 14px 16px 18px;
+      border-top: 2px dashed #feb4c2;
+      backdrop-filter: blur(5px);
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border-radius: 60px;
+      padding: 6px 10px 6px 18px;
+      box-shadow: 0 6px 12px #fec7d3;
+      border: 1px solid #ffbfd0;
+    }
+
+    .input-row textarea {
+      flex: 1;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 15px;
+      padding: 8px 0;
+      max-height: 80px;
+      background: transparent;
+      color: #582b36;
+    }
+    .input-row textarea::placeholder {
+      color: #e7a1b2;
+      font-style: italic;
+    }
+
+    .emoji-btn, .img-btn, .send-btn {
+      background: none;
+      border: none;
+      font-size: 26px;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.1s;
+      color: #b14b65;
+    }
+    .send-btn {
+      background: #ffb7c7;
+      color: white;
+      font-size: 22px;
+      box-shadow: 0 2px 6px #f5a3b5;
+    }
+    .send-btn:hover {
+      background: #ffa3b8;
+    }
+
+    /* 设置面板 (折叠卡片) */
+    .settings-panel {
+      background: #ffeef4f2;
+      backdrop-filter: blur(12px);
+      padding: 18px 16px;
+      border-top: 2px solid #ffc1d2;
+      max-height: 340px;
+      overflow-y: auto;
+      transition: all 0.3s;
+    }
+
+    .settings-panel.hidden {
+      display: none;
+    }
+
+    .setting-section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-weight: 600;
+      color: #a13e59;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+
+    .avatar-edit {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .avatar-edit label {
+      background: #ffd9e2;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      color: #632c3c;
+      cursor: pointer;
+    }
+
+    /* 字卡库折叠区 */
+    .cardlib-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      background: #ffe0ea;
+      padding: 10px 16px;
+      border-radius: 40px;
+    }
+    .cardlib-content {
+      margin-top: 12px;
+      padding-left: 6px;
+      transition: 0.2s;
+    }
+    .cardlib-content.collapsed {
+      display: none;
+    }
+
+    .wordcard-item {
+      background: white;
+      border-radius: 30px;
+      padding: 8px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px #fbc1d1;
+    }
+    .wordcard-text {
+      flex: 1;
+      font-size: 14px;
+      color: #49212e;
+    }
+    .card-actions button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      margin-left: 6px;
+      cursor: pointer;
+      color: #b14b65;
+    }
+
+    .add-card-form {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .add-card-form input {
+      flex: 1;
+      border-radius: 40px;
+      border: 1px solid #ffb7c7;
+      padding: 8px 14px;
+      background: white;
+    }
+
+    .emoji-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #ffeef2;
+      padding: 8px 12px;
+      border-radius: 28px;
+      margin-top: 8px;
+    }
+    .emoji-picker span {
+      font-size: 26px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 20px;
+    }
+
+    .bg-upload {
+      margin-top: 8px;
+    }
+
+    .small-note {
+      font-size: 12px;
+      color: #b16f7e;
+      margin-top: 5px;
+    }
+
+    button {
+      user-select: none;
+    }
+    input[type="file"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="app-card">
+  <!-- 头部 -->
+  <div class="chat-header">
+    <div class="avatar-pair">
+      <img id="myAvatarDisplay" class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ffb3c6'/%3E%3Ccircle cx='35' cy='40' r='6' fill='white'/%3E%3Ccircle cx='65' cy='40' r='6' fill='white'/%3E%3Ccircle cx='50' cy='65' r='12' fill='%23ff809a'/%3E%3C/svg%3E" alt="我的头像" title="点击更换我的头像">
+      <span style="font-size: 22px; color:#d9647e;">💞</span>
+      <img id="dreamAvatarDisplay" class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23e6b0ff'/%3E%3Ccircle cx='35' cy='40' r='6' fill='white'/%3E%3Ccircle cx='65' cy='40' r='6' fill='white'/%3E%3Cpath d='M40 70 Q50 80 60 70' stroke='%23a64d79' stroke-width='4' fill='none' /%3E%3C/svg%3E" alt="梦角头像" title="点击更换梦角头像">
+    </div>
+    <div class="header-title">✨梦角·链接✨</div>
+    <button class="settings-toggle" id="toggleSettingsBtn">功能</button>
+  </div>
+
+  <!-- 聊天消息区 -->
+  <div class="chat-area" id="chatArea"></div>
+
+  <!-- 输入区域 -->
+  <div class="input-panel">
+    <div class="input-row">
+      <textarea id="messageInput" placeholder="想对梦角说什么..." rows="1"></textarea>
+      <button class="emoji-btn" id="emojiBtn">😊</button>
+      <button class="img-btn" id="imgSendBtn">🖼️</button>
+      <button class="send-btn" id="sendTextBtn">➤</button>
+    </div>
+    <!-- emoji简易库 -->
+    <div class="emoji-picker" id="emojiPicker" style="display: none;"></div>
+    <!-- 隐藏图片上传 -->
+    <input type="file" id="imageUpload" accept="image/*">
+  </div>
+
+  <!-- 设置面板 (可折叠) -->
+  <div class="settings-panel hidden" id="settingsPanel">
+    <!-- 1. 头像自定义 -->
+    <div class="setting-section">
+      <div class="section-title">🧸 自定义头像</div>
+      <div class="avatar-edit">
+        <label for="myAvatarUpload">👤 我的头像</label>
+        <input type="file" id="myAvatarUpload" accept="image/*">
+        <label for="dreamAvatarUpload">🌙 梦角头像</label>
+        <input type="file" id="dreamAvatarUpload" accept="image/*">
+      </div>
+    </div>
+    <!-- 2. 更换聊天背景 -->
+    <div class="setting-section">
+      <div class="section-title">🎀 聊天背景</div>
+      <label for="bgUpload" style="background:#ffd9e2; padding:8px 20px; border-radius:40px; cursor:pointer;">📁 选择图片</label>
+      <input type="file" id="bgUpload" accept="image/*">
+      <button id="resetBgBtn" style="margin-left:10px; background:#ffe0e7; border:none; padding:8px 16px; border-radius:30px;">重置</button>
+    </div>
+
+    <!-- 3. 字卡内容库 (折叠) -->
+    <div class="setting-section">
+      <div class="cardlib-header" id="toggleCardLib">
+        <span>📮 字卡库 · 梦角回应</span>
+        <span id="cardLibToggleIcon">▼</span>
+      </div>
+      <div class="cardlib-content" id="cardLibContent">
+        <div id="wordcardList" style="max-height:200px; overflow-y:auto; padding-right:4px;">
+          <!-- 动态渲染字卡 -->
+        </div>
+        <div class="add-card-form">
+          <input type="text" id="newCardInput" placeholder="新字卡内容...">
+          <button id="addCardBtn" style="background:#ffb7c7; border:none; border-radius:40px; padding:8px 18px; color:white;">➕添加</button>
+        </div>
+        <div class="small-note">点击字卡可编辑，✖删除</div>
+      </div>
+    </div>
+    <div class="small-note" style="text-align:center;">💬 梦角会在24h内随机弹出字卡~</div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    "use strict";
+
+    // ---------- 数据存储 keys ----------
+    const STORAGE_KEYS = {
+      MESSAGES: 'dream_messages',
+      CARDS: 'dream_cards',
+      MY_AVATAR: 'my_avatar',
+      DREAM_AVATAR: 'dream_avatar',
+      CHAT_BG: 'chat_bg',
+      EVENTS: 'pending_events',      // 待弹出事件
+      LAST_AUTO: 'last_auto_time'
+    };
+
+    // 全局状态
+    let messages = [];                // { id, sender, type, content, timestamp }
+    let cardLibrary = [];            // { id, text }
+    let myAvatar = '';
+    let dreamAvatar = '';
+    let chatBackground = '';
+    
+    // 弹出调度
+    let pendingEvents = [];           // { id, triggerTime, type }  type: 'auto' 或 'reply'
+    let nextEventId = 1000;
+    
+    // 默认字卡库
+    const DEFAULT_CARDS = [
+      { id: 'c1', text: '✨ 我一直都在哦' },
+      { id: 'c2', text: '🌸 今天的你也超可爱' },
+      { id: 'c3', text: '🌙 梦里有你，真好' },
+      { id: 'c4', text: '💗 悄悄告诉你，你是最特别的' },
+      { id: 'c5', text: '🎀 无论何时，我都在听' },
+    ];
+
+    // DOM 元素
+    const chatArea = document.getElementById('chatArea');
+    const msgInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendTextBtn');
+    const emojiBtn = document.getElementById('emojiBtn');
+    const emojiPicker = document.getElementById('emojiPicker');
+    const imgSendBtn = document.getElementById('imgSendBtn');
+    const imageUpload = document.getElementById('imageUpload');
+    const toggleSettingsBtn = document.getElementById('toggleSettingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const myAvatarDisplay = document.getElementById('myAvatarDisplay');
+    const dreamAvatarDisplay = document.getElementById('dreamAvatarDisplay');
+    const myAvatarUpload = document.getElementById('myAvatarUpload');
+    const dreamAvatarUpload = document.getElementById('dreamAvatarUpload');
+    const bgUpload = document.getElementById('bgUpload');
+    const resetBgBtn = document.getElementById('resetBgBtn');
+    const toggleCardLib = document.getElementById('toggleCardLib');
+    const cardLibContent = document.getElementById('cardLibContent');
+    const cardLibToggleIcon = document.getElementById('cardLibToggleIcon');
+    const wordcardListDiv = document.getElementById('wordcardList');
+    const newCardInput = document.getElementById('newCardInput');
+    const addCardBtn = document.getElementById('addCardBtn');
+
+    // 常用emoji库
+    const EMOJIS = ['😊','🥰','😘','💗','🌸','✨','🌟','🌈','🍰','🧸','🎀','💌','🫧','☁️','🌙','⭐','💭','🪽'];
+
+    // ---------- 初始化 / 加载数据 ----------
+    function loadFromStorage() {
+      try {
+        const storedMsg = localStorage.getItem(STORAGE_KEYS.MESSAGES);
+        if(storedMsg) messages = JSON.parse(storedMsg);
+        else messages = [];
+        
+        const storedCards = localStorage.getItem(STORAGE_KEYS.CARDS);
+        if(storedCards) cardLibrary = JSON.parse(storedCards);
+        else cardLibrary = [...DEFAULT_CARDS];
+        
+        myAvatar = localStorage.getItem(STORAGE_KEYS.MY_AVATAR) || '';
+        dreamAvatar = localStorage.getItem(STORAGE_KEYS.DREAM_AVATAR) || '';
+        chatBackground = localStorage.getItem(STORAGE_KEYS.CHAT_BG) || '';
+        
+        const storedEvents = localStorage.getItem(STORAGE_KEYS.EVENTS);
+        if(storedEvents) pendingEvents = JSON.parse(storedEvents);
+        else pendingEvents = [];
+        
+        // 若没有主动事件，安排一个
+        if(!pendingEvents.some(e=>e.type==='auto')) {
+          scheduleAutoEvent();
+        }
+      } catch(e) { console.warn("读取存储失败"); }
+    }
+
+    function saveMessages() { localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(messages)); }
+    function saveCards() { localStorage.setItem(STORAGE_KEYS.CARDS, JSON.stringify(cardLibrary)); }
+    function saveAvatar(type, val) { localStorage.setItem(type, val); }
+    function saveBg(val) { localStorage.setItem(STORAGE_KEYS.CHAT_BG, val); }
+    function saveEvents() { localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(pendingEvents)); }
+
+    // 安排主动弹出 (0~24h)
+    function scheduleAutoEvent() {
+      const now = Date.now();
+      const delay = Math.random() * 24 * 60 * 60 * 1000; // 0~24h
+      const triggerTime = now + delay;
+      const event = { id: nextEventId++, triggerTime, type: 'auto' };
+      pendingEvents.push(event);
+      saveEvents();
+    }
+
+    // 添加回复事件 (用户发消息后)
+    function addReplyEvent() {
+      const now = Date.now();
+      const delay = Math.random() * 24 * 60 * 60 * 1000;
+      const triggerTime = now + delay;
+      const event = { id: nextEventId++, triggerTime, type: 'reply' };
+      pendingEvents.push(event);
+      saveEvents();
+    }
+
+    // 处理过期事件 (弹出字卡)
+    function processPendingEvents() {
+      const now = Date.now();
+      const toTrigger = pendingEvents.filter(e => e.triggerTime <= now);
+      const remaining = pendingEvents.filter(e => e.triggerTime > now);
+      
+      toTrigger.sort((a,b) => a.triggerTime - b.triggerTime);
+      
+      for(let ev of toTrigger) {
+        // 弹出字卡
+        if(cardLibrary.length === 0) {
+          // 无字卡就跳过，但补一条提示？
+          continue;
+        }
+        const randomCard = cardLibrary[Math.floor(Math.random() * cardLibrary.length)];
+        const dreamMsg = {
+          id: 'msg_'+Date.now()+'_'+Math.random(),
+          sender: 'dream',
+          type: 'text',
+          content: randomCard.text,
+          timestamp: Date.now()
+        };
+        messages.push(dreamMsg);
+        
+        // 如果是auto类型，安排下一个auto
+        if(ev.type === 'auto') {
+          scheduleAutoEvent();
+        }
+      }
+      
+      pendingEvents = remaining;
+      saveEvents();
+      if(toTrigger.length > 0) {
+        saveMessages();
+        renderMessages();
+      }
+    }
+
+    // 检查并渲染
+    function checkAndPop() {
+      processPendingEvents();
+      renderMessages();
+    }
+
+    // 渲染聊天区
+    function renderMessages() {
+      if(!chatArea) return;
+      let html = '';
+      messages.forEach(msg => {
+        const isMe = msg.sender === 'me';
+        const bubbleClass = isMe ? 'me' : 'dream';
+        const timeStr = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        let contentHtml = '';
+        if(msg.type === 'text') {
+          contentHtml = `<div>${escapeHtml(msg.content)}</div>`;
+        } else if(msg.type === 'image') {
+          contentHtml = `<img src="${msg.content}" alt="图片">`;
+        }
+        html += `<div class="message-row ${bubbleClass}">
+          <div class="bubble">
+            ${contentHtml}
+            <div class="time-meta">${timeStr}</div>
+          </div>
+        </div>`;
+      });
+      chatArea.innerHTML = html || '<div style="text-align:center; color:#b98b97; padding:30px;">💭 和梦角说点什么吧…</div>';
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 更新UI头像/背景
+    function applyUIAvatars() {
+      if(myAvatar) myAvatarDisplay.src = myAvatar;
+      if(dreamAvatar) dreamAvatarDisplay.src = dreamAvatar;
+      if(chatBackground) {
+        chatArea.style.backgroundImage = `url(${chatBackground})`;
+      } else {
+        chatArea.style.backgroundImage = '';
+      }
+    }
+
+    // 发送我的消息（文本/图片）
+    function sendMyMessage(type, content) {
+      if(!content) return;
+      const newMsg = {
+        id: 'msg_'+Date.now()+'_'+Math.random(),
+        sender: 'me',
+        type: type,
+        content: content,
+        timestamp: Date.now()
+      };
+      messages.push(newMsg);
+      saveMessages();
+      renderMessages();
+      
+      // 添加一个回复事件 (梦角会在24h内回应)
+      addReplyEvent();
+      // 保存事件后检查
+      processPendingEvents();
+      renderMessages();
+    }
+
+    // 渲染字卡库列表
+    function renderCardLibrary() {
+      if(!wordcardListDiv) return;
+      let html = '';
+      cardLibrary.forEach(card => {
+        html += `<div class="wordcard-item" data-cardid="${card.id}">
+          <span class="wordcard-text" contenteditable="false">${escapeHtml(card.text)}</span>
+          <div class="card-actions">
+            <button class="edit-card-btn" data-id="${card.id}">✏️</button>
+            <button class="delete-card-btn" data-id="${card.id}">✖</button>
+          </div>
+        </div>`;
+      });
+      wordcardListDiv.innerHTML = html || '<div style="color:#b37b88;">✨ 添加第一条字卡吧</div>';
+      
+      // 绑定编辑/删除
+      document.querySelectorAll('.edit-card-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.dataset.id;
+          const itemDiv = btn.closest('.wordcard-item');
+          const textSpan = itemDiv.querySelector('.wordcard-text');
+          const isEditing = textSpan.getAttribute('contenteditable') === 'true';
+          if(!isEditing) {
+            textSpan.setAttribute('contenteditable', 'true');
+            textSpan.focus();
+            btn.textContent = '💾';
+          } else {
+            const newText = textSpan.innerText.trim();
+            if(newText) {
+              const card = cardLibrary.find(c => c.id === id);
+              if(card) { card.text = newText; saveCards(); }
+            }
+            textSpan.setAttribute('contenteditable', 'false');
+            btn.textContent = '✏️';
+            renderCardLibrary();
+          }
+        });
+      });
+      
+      document.querySelectorAll('.delete-card-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          cardLibrary = cardLibrary.filter(c => c.id !== id);
+          saveCards();
+          renderCardLibrary();
+        });
+      });
+    }
+
+    // 事件绑定与初始化
+    function init() {
+      loadFromStorage();
+      applyUIAvatars();
+      renderMessages();
+      renderCardLibrary();
+      buildEmojiPicker();
+      
+      // 定时检查弹出 (每10秒检查)
+      setInterval(() => {
+        processPendingEvents();
+        renderMessages();
+      }, 10000);
+      
+      // 发送文字
+      sendBtn.addEventListener('click', () => {
+        const text = msgInput.value.trim();
+        if(text) {
+          sendMyMessage('text', text);
+          msgInput.value = '';
+        }
+      });
+      
+      msgInput.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendBtn.click();
+        }
+      });
+      
+      // 图片上传发送
+      imgSendBtn.addEventListener('click', () => imageUpload.click());
+      imageUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if(file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            sendMyMessage('image', ev.target.result);
+            imageUpload.value = '';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      // 头像上传
+      myAvatarUpload.addEventListener('change', (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => { myAvatar = ev.target.result; myAvatarDisplay.src = myAvatar; saveAvatar(STORAGE_KEYS.MY_AVATAR, myAvatar); };
+        r.readAsDataURL(f);
+      });
+      dreamAvatarUpload.addEventListener('change', (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => { dreamAvatar = ev.target.result; dreamAvatarDisplay.src = dreamAvatar; saveAvatar(STORAGE_KEYS.DREAM_AVATAR, dreamAvatar); };
+        r.readAsDataURL(f);
+      });
+      
+      // 背景
+      bgUpload.addEventListener('change', (e) => {
+        const f = e.target.files[0]; if(!f) return;
+        const r = new FileReader();
+        r.onload = (ev) => { chatBackground = ev.target.result; chatArea.style.backgroundImage = `url(${chatBackground})`; saveBg(chatBackground); };
+        r.readAsDataURL(f);
+      });
+      resetBgBtn.addEventListener('click', ()=>{
+        chatBackground = ''; chatArea.style.backgroundImage = ''; saveBg('');
+      });
+      
+      // 设置面板切换
+      toggleSettingsBtn.addEventListener('click', ()=>{
+        settingsPanel.classList.toggle('hidden');
+      });
+      
+      // 折叠字卡库
+      toggleCardLib.addEventListener('click', ()=>{
+        cardLibContent.classList.toggle('collapsed');
+        cardLibToggleIcon.textContent = cardLibContent.classList.contains('collapsed') ? '▶' : '▼';
+      });
+      
+      // 添加字卡
+      addCardBtn.addEventListener('click', ()=>{
+        const txt = newCardInput.value.trim();
+        if(txt) {
+          const newCard = { id: 'card_'+Date.now(), text: txt };
+          cardLibrary.push(newCard);
+          saveCards();
+          renderCardLibrary();
+          newCardInput.value = '';
+        }
+      });
+      
+      // 点击头像也可上传
+      myAvatarDisplay.addEventListener('click', ()=> myAvatarUpload.click());
+      dreamAvatarDisplay.addEventListener('click', ()=> dreamAvatarUpload.click());
+      
+      // emoji
+      emojiBtn.addEventListener('click', ()=> {
+        emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'flex' : 'none';
+      });
+      
+      // 检查一次弹出
+      setTimeout(()=> { processPendingEvents(); renderMessages(); }, 200);
+    }
+
+    function buildEmojiPicker() {
+      EMOJIS.forEach(em => {
+        const span = document.createElement('span');
+        span.textContent = em;
+        span.addEventListener('click', ()=>{
+          msgInput.value += em;
+          emojiPicker.style.display = 'none';
+          msgInput.focus();
+        });
+        emojiPicker.appendChild(span);
+      });
+    }
+
+    // 启动
+    init();
+  })();
+</script>
+</body>
+</html>
