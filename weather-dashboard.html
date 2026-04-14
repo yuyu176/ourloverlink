@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 0; }
+    .container {
+      max-width: 440px; margin: 48px auto; background: #fff; box-shadow: 0 2px 10px #0001;
+      border-radius: 12px; padding: 32px 24px;
+    }
+    h1 { text-align: center; color: #1a4f8b; }
+    .input-group { display: flex; justify-content: center; margin-bottom: 18px; }
+    input[type="text"] {
+      flex: 2; padding: 8px; font-size: 16px; border: 1px solid #bbb; border-radius: 4px 0 0 4px;
+    }
+    button {
+      flex: 1; padding: 8px 0; font-size: 16px; background: #1a4f8b; color: #fff;
+      border: none; border-radius: 0 4px 4px 0; cursor: pointer; outline: none;
+    }
+    button:hover { background: #1761a0; }
+    .weather { margin-top: 24px; }
+    .weather-info {display:flex; align-items:center; gap:20px;}
+    .weather-icon {width: 60px;}
+    .error { color: #c00; text-align: center; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Dashboard</h1>
+    <div class="input-group">
+      <input id="city-input" type="text" placeholder="Enter city, e.g. Tokyo" />
+      <button id="fetch-btn">Get Weather</button>
+    </div>
+    <div id="result"></div>
+  </div>
+  <script>
+    const apiKey = 'YOUR_API_KEY_HERE'; // Replace with your OpenWeatherMap API Key
+    document.getElementById('fetch-btn').addEventListener('click', fetchWeather);
+    document.getElementById('city-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') fetchWeather();
+    });
+
+    function fetchWeather() {
+      const city = document.getElementById('city-input').value.trim();
+      const resultDiv = document.getElementById('result');
+      if (!city) {
+        resultDiv.innerHTML = '<div class="error">Please enter a city.</div>';
+        return;
+      }
+      resultDiv.innerHTML = 'Loading…';
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.cod !== 200) {
+            resultDiv.innerHTML = `<div class="error">${data.message || 'City not found.'}</div>`;
+            return;
+          }
+          resultDiv.innerHTML = `
+            <div class="weather">
+              <div class="weather-info">
+                <img class="weather-icon" src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="">
+                <div>
+                  <strong style="font-size:1.5em">${data.name}, ${data.sys.country}</strong><br>
+                  <span style="font-size:1.3em">${data.main.temp.toFixed(1)}°C</span><br>
+                  <span>${data.weather[0].description.replace(/\b\w/g, l => l.toUpperCase())}</span><br>
+                  <span>Humidity: ${data.main.humidity}%</span><br>
+                  <span>Wind: ${data.wind.speed} m/s</span>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .catch(() => {
+          resultDiv.innerHTML = `<div class="error">Error fetching weather data.</div>`;
+        });
+    }
+  </script>
+</body>
+</html>
